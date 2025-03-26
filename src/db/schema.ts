@@ -16,6 +16,7 @@ export const events = pgTable("events", {
   materials: text("materials").notNull(),
   observation: text("observation"),
   focal: text("focal").notNull(),
+  confirmation: text("confirmation").notNull(),
 });
 
 export type InsertEvent = typeof events.$inferInsert;

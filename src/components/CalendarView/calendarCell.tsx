@@ -1,23 +1,34 @@
 import { useRef } from "react";
-import { mergeProps, useCalendarCell, useFocusRing } from "react-aria";
+import {
+  mergeProps,
+  useCalendarCell,
+  useFocusRing,
+  useLocale,
+} from "react-aria";
 import { CalendarState } from "react-stately";
 import {
   CalendarDate,
+  getDayOfWeek,
   getLocalTimeZone,
   isToday,
 } from "@internationalized/date";
 import { cn } from "@/lib/utils";
+import dateMark from "@/actions/dateMark";
 
 export function CalendarCell({
   state,
   date,
   currentMonth,
+  calendarData, //C
 }: {
   state: CalendarState;
   date: CalendarDate;
   currentMonth: CalendarDate;
+  calendarData: string; //C
 }) {
   let ref = useRef(null);
+  let { locale } = useLocale(); //C
+  let dayofweek = getDayOfWeek(date, locale); //C
   let {
     cellProps,
     buttonProps,
@@ -31,6 +42,8 @@ export function CalendarCell({
   const { focusProps, isFocusVisible } = useFocusRing();
 
   const isDateToday = isToday(date, getLocalTimeZone());
+  let stringdate = dayofweek.toString(); //C
+  let isMarkedDate = calendarData?.includes(stringdate); //C
 
   return (
     <td
@@ -54,8 +67,9 @@ export function CalendarCell({
           {isDateToday && (
             <div
               className={cn(
-                "absolute bottom-2.5 transform-translate-x-1/2 translate-y-1/2 size-1.5 bg-primary rounded-full"
-              , isSelected && "bg-white")}
+                "absolute bottom-2.5 transform-translate-x-1/2 translate-y-1/2 size-1.5 bg-primary rounded-full",
+                isSelected && "bg-white"
+              )}
             />
           )}
         </div>

@@ -12,10 +12,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export type FormValues = {
   client: string;
@@ -25,103 +26,30 @@ export type FormValues = {
   materials: string;
   observation?: string;
   focal: string;
+  confirmation: string;
 };
 
 export function EventDialog() {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      confirmation: "miritsoka", // Default selection
+    },
+  });
 
   const onSubmit = async (data: FormValues) => {
     await addEvents(data);
   };
-  // export function MyDialog() {
-  //   return (
-  //     <Dialog>
-  //       <DialogTrigger asChild>
-  //         <Button className="relative" variant="default">
-  //           <PlusIcon />
-  //           Nouvel Evenement
-  //         </Button>
-  //       </DialogTrigger>
-  //       <DialogDescription></DialogDescription>
-  //       <DialogContent className="sm:max-w-[700px]">
-  //         <DialogHeader>
-  //           <DialogTitle>Nouvel Evenement</DialogTitle>
-  //         </DialogHeader>
-  //         <div className="grid gap-4 py-4">
-  //           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-  //             <div className="grid grid-cols-4 gap-4">
-  //               <Label htmlFor="Client" className="text-right">
-  //                 Client
-  //               </Label>
-  //               <Input className="col-span-3" />
-  //             </div>
-  //             <div className="grid grid-cols-4 gap-4">
-  //               <Label htmlFor="Lieux" className="text-right">
-  //                 Lieux
-  //               </Label>
-  //               <Input className="col-span-3" />
-  //             </div>
-  //           </div>
-  //           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-  //             <div className="grid grid-cols-4 gap-4">
-  //               <Label htmlFor="Date" className="text-right">
-  //                 Date
-  //               </Label>
-  //               <Input type="Date" className="col-span-3 text-muted-foreground" />
-  //             </div>
-  //             <div className="grid grid-cols-4 gap-4">
-  //               <Label htmlFor="Route" className="text-right">
-  //                 Route
-  //               </Label>
-  //               <Input type="number" placeholder="Jours" className="col-span-3" />
-  //             </div>
-  //           </div>
-  //           <div className="grid grid-cols-4 gap-4">
-  //             <Label htmlFor="Materiels" className="text-right">
-  //               Materiels
-  //             </Label>
-  //             <Input className="col-span-3" />
-  //           </div>
-  //           <div className="grid col-span-full grid-cols-1 gap-4">
-  //             <Label
-  //               htmlFor="Observation"
-  //               className="block text-righ text-sm/6 font-medium text-gray-900"
-  //             >
-  //               Observation
-  //             </Label>
-  //             <div className="mt-2">
-  //               <textarea
-  //                 name="about"
-  //                 className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-30 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm
-  //         focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]
-  //         aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
-  //               ></textarea>
-  //             </div>
-  //           </div>
-  //           <div className="grid grid-cols-4 gap-4">
-  //             <Label htmlFor="Point Focal" className="text-right">
-  //               Point Focal
-  //             </Label>
-  //             <Input className="col-span-3" />
-  //           </div>
-  //         </div>
-  //         <DialogFooter>
-  //           <Button onClick={getEvents} type="submit">Ajouter</Button>
-  //         </DialogFooter>
-  //       </DialogContent>
-  //     </Dialog>
-  //   );
-  // }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant={"default"}>
-          <Plus />
+          <PlusIcon />
           Ajouter un evenement
         </Button>
       </DialogTrigger>
@@ -139,7 +67,9 @@ export function EventDialog() {
                 <Input
                   className="col-span-3"
                   id="client"
-                  {...register("client", { required: "Le champ client est requis" })}
+                  {...register("client", {
+                    required: "Le champ client est requis",
+                  })}
                 />
                 {errors.client && (
                   <span className="col-span-4 text-sm text-red-500">
@@ -155,7 +85,9 @@ export function EventDialog() {
                 <Input
                   className="col-span-3"
                   id="place"
-                  {...register("place", { required: "Le champ lieux est requis" })}
+                  {...register("place", {
+                    required: "Le champ lieux est requis",
+                  })}
                 />
                 {errors.place && (
                   <span className="col-span-4 text-sm text-red-500">
@@ -174,8 +106,10 @@ export function EventDialog() {
                   type="date"
                   className="col-span-3 text-muted-foreground"
                   id="date"
-                  min= {new Date().toISOString().split('T')[0]}
-                  {...register("date", { required: "Le champ date est requis" })}
+                  min={new Date().toISOString().split("T")[0]}
+                  {...register("date", {
+                    required: "Le champ date est requis",
+                  })}
                 />
                 {errors.date && (
                   <span className="col-span-4 text-sm text-red-500">
@@ -196,6 +130,7 @@ export function EventDialog() {
                   id="travel"
                   {...register("travel", {
                     required: "Le champ route est requis",
+                    valueAsNumber: true,
                   })}
                 />
                 {errors.travel && (
@@ -247,11 +182,49 @@ export function EventDialog() {
               <Input
                 className="col-span-3"
                 id="focal"
-                {...register("focal", { required: "Le champ focal est requis" })}
+                {...register("focal", {
+                  required: "Le champ focal est requis",
+                })}
               />
               {errors.focal && (
                 <span className="col-span-4 text-sm text-red-500">
                   {errors.focal.message}
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-4 gap-4">
+              <Label htmlFor="confirmation" className="text-right">
+                Confirmation
+              </Label>
+              <Controller
+                name="confirmation"
+                control={control}
+                rules={{ required: "Événement confirmé ?" }}
+                render={({ field }) => (
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    className="col-span-3"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="miritsoka" id="miritsoka" />
+                      <Label htmlFor="miritsoka">Miritsoka</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="confirme" id="confirme" />
+                      <Label htmlFor="confirme">Confirmé</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="non-confirme" id="non-confirme" />
+                      <Label htmlFor="non-confirme">Non Confirmé</Label>
+                    </div>
+                  </RadioGroup>
+                )}
+              />
+              {errors.confirmation && (
+                <span className="col-span-4 text-sm text-red-500">
+                  {errors.confirmation.message}
                 </span>
               )}
             </div>

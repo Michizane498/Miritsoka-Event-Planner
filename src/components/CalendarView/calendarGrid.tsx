@@ -45,6 +45,7 @@ export function CalendarGrid({
               .map((date, i) =>
                 date ? (
                   <CalendarCell
+                  calendarData="Special"
                     currentMonth={startDate}
                     key={i}
                     state={state}
