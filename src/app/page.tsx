@@ -3,6 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 import {EventDialog} from "@/form/dialog";
 import { MyScrollArea } from "@/components/ScrollArea/ScrollArea";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {CustomCalendar} from "@/components/Calendar/ColoredCalendar";
 export default function page() {
   return (
     <div className="max-h-screen flex items-center justify-center overflow-hidden">
@@ -15,6 +18,7 @@ export default function page() {
               </h1>
               <div className="flex-1/2 px-4 py-4 items-center ">
                 <RenderCalendar />
+                {/* <CustomCalendar/> */}
               </div>
             </CardContent>
           </Card>

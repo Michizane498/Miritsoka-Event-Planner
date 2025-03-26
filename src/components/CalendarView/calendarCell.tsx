@@ -13,13 +13,11 @@ import {
   isToday,
 } from "@internationalized/date";
 import { cn } from "@/lib/utils";
-import dateMark from "@/actions/dateMark";
 
 export function CalendarCell({
   state,
   date,
   currentMonth,
-  calendarData, //C
 }: {
   state: CalendarState;
   date: CalendarDate;
@@ -27,8 +25,6 @@ export function CalendarCell({
   calendarData: string; //C
 }) {
   let ref = useRef(null);
-  let { locale } = useLocale(); //C
-  let dayofweek = getDayOfWeek(date, locale); //C
   let {
     cellProps,
     buttonProps,
@@ -42,8 +38,9 @@ export function CalendarCell({
   const { focusProps, isFocusVisible } = useFocusRing();
 
   const isDateToday = isToday(date, getLocalTimeZone());
-  let stringdate = dayofweek.toString(); //C
-  let isMarkedDate = calendarData?.includes(stringdate); //C
+
+  let {locale} = useLocale()
+  let dayofWeek = getDayOfWeek(date,locale)
 
   return (
     <td
@@ -60,6 +57,9 @@ export function CalendarCell({
             "size-full rounded-sm flex items-center justify-center text-sm font-semibold",
             isDisabled ? "text-muted-foreground cursor-not-allowed" : "",
             isSelected ? "bg-primary text-white" : "",
+            // isBrownMark ? "bg-amber-600 text-white": "",
+            // isGreenMark ? "bg-green-400 text-white": "",
+            // isRedMark ? "bg-red-400 text-white": "",
             !isSelected && !isDisabled ? "hover:bg-primary/10" : ""
           )}
         >

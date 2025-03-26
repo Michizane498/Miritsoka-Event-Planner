@@ -37,7 +37,7 @@ export function EventDialog() {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      confirmation: "miritsoka", // Default selection
+      confirmation: "miritsoka",
     },
   });
 
@@ -194,9 +194,6 @@ export function EventDialog() {
             </div>
 
             <div className="grid grid-cols-4 gap-4">
-              <Label htmlFor="confirmation" className="text-right">
-                Confirmation
-              </Label>
               <Controller
                 name="confirmation"
                 control={control}
@@ -207,17 +204,55 @@ export function EventDialog() {
                     value={field.value}
                     className="col-span-3"
                   >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="miritsoka" id="miritsoka" />
-                      <Label htmlFor="miritsoka">Miritsoka</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="confirme" id="confirme" />
-                      <Label htmlFor="confirme">Confirmé</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="non-confirme" id="non-confirme" />
-                      <Label htmlFor="non-confirme">Non Confirmé</Label>
+                    <div className="flex gap-3">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          className="ring-[1px] ring-border rounded py-1 px-3 data-[state=checked]:ring-2 data-[state=checked]:ring-blue-500"
+                          value="Miritsoka"
+                          id="miritsoka"
+                        />
+                        <Label htmlFor="miritsoka">Miritsoka</Label>
+                        {/* <RadioGroup.Item
+                          value="Miritsoka"
+                          className="ring-[1px] ring-border rounded-xs pb-1 items-center px-1 data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-900"
+                        >
+                          <span className="text-[13px] tracking-tight">
+                            Miritsoka
+                          </span>
+                        </RadioGroup.Item> */}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          className="ring-[1px] ring-border rounded py-1 px-3 data-[state=checked]:ring-2 data-[state=checked]:ring-blue-500"
+                          value="Confirmé"
+                          id="confirme"
+                        />
+                        <Label htmlFor="confirme">Confirmé</Label>
+                        {/* <RadioGroup.Item
+                          value="Confirmé"
+                          className="ring-[1px] ring-border rounded-xs pb-1 items-center px-1 data-[state=checked]:bg-green-200 data-[state=checked]:ring-green-500"
+                        >
+                          <span className="text-[13px] tracking-tight">
+                            Confirmé
+                          </span>
+                        </RadioGroup.Item> */}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          className="ring-[1px] ring-border rounded py-1 px-3 data-[state=checked]:ring-2 data-[state=checked]:ring-blue-500"
+                          value="Non confirmé"
+                          id="non-confirme"
+                        />
+                        <Label htmlFor="non-confirme">Non Confirmé</Label>
+                        {/* <RadioGroup.Item
+                          value="Non confirmé"
+                          className="ring-[1px] ring-border rounded-xs pb-1 items-center px-1 data-[state=checked]:bg-red-300 data-[state=checked]:ring-red-700"
+                        >
+                          <span className="text-[13px] tracking-tight">
+                            Non confirmé
+                          </span>
+                        </RadioGroup.Item> */}
+                      </div>
                     </div>
                   </RadioGroup>
                 )}
