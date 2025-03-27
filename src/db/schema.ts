@@ -11,7 +11,7 @@ export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   client: varchar("client", { length: 255 }).notNull(),
   place: varchar("place", { length: 255 }).notNull(),
-  date: date("date").notNull(),
+  date: text("date").notNull(),
   travel: integer("travel").default(0),
   materials: text("materials").notNull(),
   observation: text("observation"),
