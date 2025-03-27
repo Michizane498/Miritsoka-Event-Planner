@@ -6,9 +6,11 @@ import { asc } from "drizzle-orm";
 
 export async function GET() {
   const data = await db
-    .select({ date: events.date, color: events.confirmation })
+    .select({ 
+      date: events.date,
+      color: events.confirmation })
     .from(events)
-    .orderBy(asc(events.date));
+    // .orderBy(asc(events.date));
     console.log(data);
 
   return Response.json(data);
