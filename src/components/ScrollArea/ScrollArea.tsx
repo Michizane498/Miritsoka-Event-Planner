@@ -12,15 +12,13 @@ export async function MyScrollArea() {
       <div className="p-4">
         <h2 className="mb-4 text-sm font-semibold leading-none">Evenements</h2>
         {data.map((tag) => (
-          <>
+          <div key={tag.id}>
             <div className="grid grid-cols-3">
-              <div className="text-sm col-span-1">{tag.place}</div>
+              <div className="text-sm col-span-1">{tag.client}</div>
               <div className="text-sm col-end-4 text-right">{tag.date}</div>
             </div>
             <div className="mt-1.5 grid grid-cols-3">
-              <div className="text-sm col-span-2">
-                Materiels: {tag.materials}
-              </div>
+              <div className="text-sm col-span-2">{tag.place}</div>
               <div className="text-sm col-end-4 text-right">
                 <Badge
                   className={`rounded-full border-none text-white ${
@@ -36,7 +34,7 @@ export async function MyScrollArea() {
               </div>
             </div>
             <Separator className="my-2" />
-          </>
+          </div>
         ))}
       </div>
     </ScrollArea>

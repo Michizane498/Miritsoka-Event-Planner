@@ -15,11 +15,10 @@ import * as React from "react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 
 export function CustomCalendar() {
 
-  const router = useRouter()
 
   const [selected, setSelected] = React.useState<Date | undefined>(undefined);
 
