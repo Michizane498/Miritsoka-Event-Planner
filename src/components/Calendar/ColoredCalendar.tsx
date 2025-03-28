@@ -15,8 +15,12 @@ import * as React from "react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function CustomCalendar() {
+
+  const router = useRouter()
+
   const [selected, setSelected] = React.useState<Date | undefined>(undefined);
 
   /* Today's date */
@@ -39,6 +43,8 @@ export function CustomCalendar() {
   const redCells = [new Date(2025, 2, 30)];
 
   const [allbrownCells, setBrownCells] = useState<Date[]>([]);
+  const [allgreenCells, setGreenCells] = useState<Date[]>([]);
+  const [allredCells, setRedCells] = useState<Date[]>([]);
 
   const handleDayClick = (day: Date | undefined) => {
     setSelected(day);
@@ -47,15 +53,23 @@ export function CustomCalendar() {
     useEffect(() => {
       async function fetchData() {
         try {
-          const response = await fetch('../../actions/api/calendar');
+          const response = await fetch('/api/calendar');
           const data = await response.json() as CalendarEvent[];
           
-          const dates = data
+          const brown = data
             .filter((item: any) => item.color === 'Miritsoka')
             .map((item: any) => new Date(item.date));
-          // const da = new Date(dates)
-          setBrownCells(Object.assign(dates));
-          console.log(dates);
+          setBrownCells(Object.assign(brown));
+
+          const green = data
+            .filter((item: any) => item.color === 'Confirmé')
+            .map((item: any) => new Date(item.date));
+          setGreenCells(Object.assign(green));
+
+          const red = data
+            .filter((item: any) => item.color === 'Non confirmé')
+            .map((item: any) => new Date(item.date));
+          setRedCells(Object.assign(red));          
           
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -63,6 +77,7 @@ export function CustomCalendar() {
       }
   
       fetchData();
+      
     }, []);
 
 
@@ -75,8 +90,8 @@ export function CustomCalendar() {
         onDayClick={handleDayClick}
         modifiers={{
           brownCells: allbrownCells,
-          greenCells: greenCells,
-          redCells: redCells,
+          greenCells: allgreenCells,
+          redCells: allredCells,
         }}
         modifiersClassNames={{
           brownCells: "brown-marker",
