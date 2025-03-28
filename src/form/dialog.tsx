@@ -60,6 +60,8 @@ export function EventDialog() {
         <DialogHeader>
           <DialogTitle>Nouvel Evenement</DialogTitle>
         </DialogHeader>
+        <DialogDescription>
+        </DialogDescription>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
