@@ -209,7 +209,7 @@ export function EventDialog() {
                     value={field.value}
                     className="col-span-3"
                   >
-                    <div className="bg-gray-200 justify-center lg:w-[280px] h-9 p-1 rounded-2xl flex">
+                    <div className="bg-gray-200 justify-center lg:w-[280px] mt-1.5 h-9 p-1 rounded-2xl flex">
                       <div className="flex items-center">
                         {/* <RadioGroupItem
                           className="ring-[1px] ring-border rounded py-1 px-3 data-[state=checked]:ring-2 data-[state=checked]:ring-blue-500"
@@ -219,7 +219,7 @@ export function EventDialog() {
                         <Label htmlFor="miritsoka">Miritsoka</Label> */}
                         <RadioGroup.Item
                           value="Miritsoka"
-                          className="data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-amber-700 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-orange-600"
+                          className="font-semibold data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-amber-700 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-orange-600"
                         >
                           <span className="text-[13px]">
                             Miritsoka
@@ -235,7 +235,7 @@ export function EventDialog() {
                         <Label htmlFor="confirme">Confirmé</Label> */}
                         <RadioGroup.Item
                           value="Confirmé"
-                          className="data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-green-400 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-green-500"
+                          className="font-semibold data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-green-400 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-green-500"
                         >
                           <span className="text-[13px]">
                             Confirmé
@@ -251,7 +251,7 @@ export function EventDialog() {
                         <Label htmlFor="non-confirme">Non Confirmé</Label> */}
                         <RadioGroup.Item
                           value="Non confirmé"
-                          className="data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-red-600 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-red-700"
+                          className="font-semibold data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 data-[state=checked]:bg-red-600 data-[state=checked]:text-primary-foreground data-[state=checked]:ring-red-700"
                         >
                           <span className="text-[13px]">
                             Non confirmé
