@@ -72,7 +72,6 @@ const DayPickerComponents = {
 
 const ConfirmationRadioGroup = ({
   control,
-  errors,
 }: {
   control: any;
   errors: any;
