@@ -19,7 +19,6 @@ import { PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { redirect } from "next/navigation";
 import { useState } from "react";
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export type FormValues = {
   client: string;
@@ -42,7 +41,7 @@ export function EventDialog() {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      confirmation: "miritsoka",
+      confirmation: "Miritsoka",
     },
   });
 

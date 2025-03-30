@@ -35,7 +35,7 @@ export default function RootLayout({
     <ClerkProvider localization={frFR}>
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header className="flex justify-end items-center p-4 gap-4 h-16">
+        <header className="flex self-end items-center p-4 gap-4 h-16 fixed z-1">
           <SignedOut>
             <SignInButton />
             <SignUpButton />
