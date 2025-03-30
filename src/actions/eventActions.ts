@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/db/drizzle";
+import { eq } from "drizzle-orm";
 import { events, InsertEvent } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 
@@ -8,6 +9,7 @@ export const getEvents = async () => {
   const data = await db.select().from(events);
   return data;
 };
+
 export const addEvents = async (data: InsertEvent) => {
   await db.insert(events).values({
     client: data.client,
@@ -20,4 +22,12 @@ export const addEvents = async (data: InsertEvent) => {
     confirmation: data.confirmation,
   });
   revalidatePath("/");
+};
+
+export const getSpecificEvents = async (date: Date) => {
+  const stringdate = date.toISOString().split('T')[0]
+  return await db
+    .select()
+    .from(events)
+    .where(eq(events.date, stringdate));
 };
