@@ -45,7 +45,6 @@ export function EventDialog() {
 
   const onSubmit = async (data: FormValues) => {
     await addEvents(data);
-    redirect("/")
   };
 
   return (
