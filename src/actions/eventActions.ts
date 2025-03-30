@@ -6,8 +6,7 @@ import { events, InsertEvent } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 
 export const getEvents = async () => {
-  const data = await db.select().from(events);
-  return data;
+  return await db.select().from(events);
 };
 
 export const addEvents = async (data: InsertEvent) => {
@@ -25,9 +24,12 @@ export const addEvents = async (data: InsertEvent) => {
 };
 
 export const getSpecificEvents = async (date: Date) => {
-  const stringdate = date.toISOString().split('T')[0]
   return await db
     .select()
     .from(events)
-    .where(eq(events.date, stringdate));
+    .where(eq(events.date, date.toISOString().split("T")[0]));
 };
+
+export const deleteSpecificEvents = async (event:number) => {
+  await db.delete(events).where(eq(events.id, event));
+}

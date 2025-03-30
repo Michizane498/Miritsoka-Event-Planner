@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export type FormValues = {
@@ -31,7 +32,9 @@ export type FormValues = {
   confirmation: string;
 };
 
+
 export function EventDialog() {
+  const [open, setOpen] = useState(false)
   const {
     control,
     register,
@@ -45,10 +48,11 @@ export function EventDialog() {
 
   const onSubmit = async (data: FormValues) => {
     await addEvents(data);
+    setOpen(false)
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"default"}>
           <PlusIcon />
