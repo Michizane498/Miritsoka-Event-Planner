@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export type FormValues = {

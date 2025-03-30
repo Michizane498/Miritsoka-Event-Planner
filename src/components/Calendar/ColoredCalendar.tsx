@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Circle,
   Edit,
   Ellipsis,
   Trash2,
@@ -297,6 +296,7 @@ export function CustomCalendar() {
           <DialogHeader>
             <DialogTitle>Details</DialogTitle>
           </DialogHeader>
+          <DialogDescription/>
           {currentEvent && (
             <form onSubmit={handleSubmit(handleFormSubmit)}>
               <div className="gap-x-6 gap-y-4 sm:grid-cols-2">
