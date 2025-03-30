@@ -20,18 +20,36 @@ export const addEvents = async (data: InsertEvent) => {
     focal: data.focal,
     confirmation: data.confirmation,
   });
-  revalidatePath("/");
+  revalidatePath("/", "page");
 };
 
 export const getSpecificEvents = async (date: Date) => {
+  revalidatePath("/");
   return await db
     .select()
     .from(events)
     .where(eq(events.date, date.toISOString().split("T")[0]));
 };
 
-export const deleteSpecificEvents = async (event:number) => {
+export const deleteSpecificEvents = async (event: number) => {
   await db.delete(events).where(eq(events.id, event));
   revalidatePath("/");
+};
+export const updateEvents = async (data: InsertEvent) => {
+  revalidatePath("/");
+  data.id? await db
+    .update(events)
+    .set({
+      client: data.client,
+      place: data.place,
+      date: data.date,
+      travel: data.travel,
+      materials: data.materials,
+      observation: data.observation,
+      focal: data.focal,
+      confirmation: data.confirmation,
+    })
+    .where(eq(events.id, data.id))
+    : null
 
-}
+};
