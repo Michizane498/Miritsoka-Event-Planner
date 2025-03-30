@@ -1,14 +1,39 @@
 "use client";
 
 import { fr } from "date-fns/locale";
-import { ChevronDown, ChevronLeft, ChevronRight, Circle, Edit, Ellipsis, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  Edit,
+  Ellipsis,
+  Trash2,
+} from "lucide-react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { Button } from "../ui/button";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isSameDay } from "date-fns";
-import { deleteSpecificEvents, getSpecificEvents, updateEvents } from "@/actions/eventActions";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  deleteSpecificEvents,
+  getSpecificEvents,
+  updateEvents,
+} from "@/actions/eventActions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Controller, useForm } from "react-hook-form";
@@ -22,16 +47,8 @@ type CalendarEvent = {
   color: string;
 };
 
-type EventDetails = {
+type EventDetails = InsertEvent & {
   id: number;
-  client: string;
-  place: string;
-  date: string;
-  travel: number | null;
-  materials: string;
-  observation: string | null;
-  focal: string;
-  confirmation: string;
 };
 
 // ==================== Components ====================
@@ -44,14 +61,20 @@ const DayPickerComponents = {
     />
   ),
   Chevron: ({ className, orientation, ...props }: any) => {
-    const Icon = orientation === "left" ? ChevronLeft 
-                    : orientation === "right" ? ChevronRight 
-                    : ChevronDown;
-    return <Icon className={`${className} w-4 h-4`} {...props} />;
-  }
+    const Icon =
+      orientation === "left"
+        ? ChevronLeft
+        : orientation === "right"
+        ? ChevronRight
+        : ChevronDown;
+    return <Icon className={`${className} w-6 h-6`} {...props} />;
+  },
 };
 
-const ConfirmationRadioGroup = ({ control, errors }: {
+const ConfirmationRadioGroup = ({
+  control,
+  errors,
+}: {
   control: any;
   errors: any;
 }) => (
@@ -60,16 +83,22 @@ const ConfirmationRadioGroup = ({ control, errors }: {
     control={control}
     rules={{ required: "Événement confirmé ?" }}
     render={({ field }) => (
-      <RadioGroup.Root onValueChange={field.onChange} value={field.value} className="col-span-3 my-2">
-        <div className="bg-gray-200 justify-center lg:w-[280px] mt-1.5 h-9 p-1 rounded-2xl flex">
+      <RadioGroup.Root
+        onValueChange={field.onChange}
+        value={field.value}
+        className="col-span-3 my-2"
+      >
+        <div className="bg-gray-200 justify-center w-[280px] mt-6 h-9 p-1 rounded-2xl flex">
           {["Miritsoka", "Confirmé", "Non confirmé"].map((option) => (
             <RadioGroup.Item
               key={option}
               value={option}
               className={`font-semibold data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 ${
-                option === "Miritsoka" ? "data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-600" :
-                option === "Confirmé" ? "data-[state=checked]:bg-green-400 data-[state=checked]:ring-green-500" :
-                "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
+                option === "Miritsoka"
+                  ? "data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-600"
+                  : option === "Confirmé"
+                  ? "data-[state=checked]:bg-green-400 data-[state=checked]:ring-green-500"
+                  : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
               } data-[state=checked]:text-primary-foreground`}
             >
               <span className="text-[13px]">{option}</span>
@@ -97,63 +126,86 @@ export function CustomCalendar() {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   // Form handling
-  const { control, register, handleSubmit, formState: { errors } } = useForm<InsertEvent>();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<EventDetails>();
 
   // Date utilities
   const today = useMemo(() => new Date(), []);
   const startYear = useMemo(() => new Date(), []);
-  const twentyDaysFromNow = useMemo(() => {
-    const date = new Date();
-    date.setDate(today.getDate() + 20);
-    return date;
-  }, [today]);
 
   // Data fetching
   const fetchCalendarData = useCallback(async () => {
     try {
       const response = await fetch("/api/calendar");
       const data: CalendarEvent[] = await response.json();
-      
-      const dates = data.map(item => new Date(item.date));
+
+      const dates = data.map((item) => new Date(item.date));
       setEvents(dates);
 
-      setBrownCells(data.filter(item => item.color === "Miritsoka").map(item => new Date(item.date)));
-      setGreenCells(data.filter(item => item.color === "Confirmé").map(item => new Date(item.date)));
-      setRedCells(data.filter(item => item.color === "Non confirmé").map(item => new Date(item.date)));
+      setBrownCells(
+        data
+          .filter((item) => item.color === "Miritsoka")
+          .map((item) => new Date(item.date))
+      );
+      setGreenCells(
+        data
+          .filter((item) => item.color === "Confirmé")
+          .map((item) => new Date(item.date))
+      );
+      setRedCells(
+        data
+          .filter((item) => item.color === "Non confirmé")
+          .map((item) => new Date(item.date))
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }, []);
 
   // Event handlers
-  const handleDayClick = useCallback(async (date: Date) => {
-    const found = events.find(d => isSameDay(d, date));
-    setSelectedDate(date);
-    
-    if (found) {
-      const details = await getSpecificEvents(found);
-      setIsListDialogOpen(true);
-      setSelectedEvents(Array.isArray(details) ? details : [details]);
-    }
-  }, [events]);
+  const handleDayClick = useCallback(
+    async (date: Date) => {
+      const found = events.find((d) => isSameDay(d, date));
+      setSelectedDate(date);
+
+      if (found) {
+        const details = await getSpecificEvents(found);
+        setSelectedEvents(Array.isArray(details) ? details : [details]);
+        setIsListDialogOpen(true);
+      }
+    },
+    [events]
+  );
 
   const handleEventDetails = useCallback((event: EventDetails) => {
     setCurrentEvent(event);
+    reset(event);
     setIsListDialogOpen(false);
     setIsDetailDialogOpen(true);
-  }, []);
+  }, [reset]);
 
-  const handleDeleteEvent = useCallback(async (id: number) => {
-    await deleteSpecificEvents(id);
-    setIsListDialogOpen(false);
-    fetchCalendarData();
-  }, [fetchCalendarData]);
+  const handleDeleteEvent = useCallback(
+    async (id: number) => {
+      await deleteSpecificEvents(id);
+      setIsListDialogOpen(false);
+      fetchCalendarData();
+    },
+    [fetchCalendarData]
+  );
 
-  const handleFormSubmit = useCallback(async (data: InsertEvent) => {
-    await updateEvents(data);
-    setIsDetailDialogOpen(false);
-    fetchCalendarData();
-  }, [fetchCalendarData]);
+  const handleFormSubmit = useCallback(
+    async (data: EventDetails) => {
+      await updateEvents(data);
+      setIsDetailDialogOpen(false);
+      fetchCalendarData();
+    },
+    [fetchCalendarData]
+  );
 
   // Initial data load
   useEffect(() => {
@@ -179,7 +231,9 @@ export function CustomCalendar() {
         classNames={{
           month: "capitalize font-semibold",
           selected: "text-white",
-          root: `${getDefaultClassNames().root} shadow-none border rounded-sm p-5`,
+          root: `${
+            getDefaultClassNames().root
+          } shadow-none border rounded-sm p-5`,
           day: "group rounded-sm",
           caption_label: "text-base",
         }}
@@ -191,7 +245,8 @@ export function CustomCalendar() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Event{selectedEvents.length !== 1 ? "s" : ""} prevu le {selectedDate?.toLocaleDateString()}
+              Event{selectedEvents.length !== 1 ? "s" : ""} prevu le{" "}
+              {selectedDate?.toLocaleDateString()}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -214,11 +269,15 @@ export function CustomCalendar() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={() => handleEventDetails(event)}>
+                        <DropdownMenuItem
+                          onClick={() => handleEventDetails(event)}
+                        >
                           <Edit className="mr-2" />
                           Modifier
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteEvent(event.id)}
+                        >
                           <Trash2 className="mr-2 stroke-red-600" />
                           <span className="text-red-600">Supprimer</span>
                         </DropdownMenuItem>
@@ -260,7 +319,9 @@ export function CustomCalendar() {
                       className="col-span-3 text-muted-foreground"
                       id="date"
                       min={today.toISOString().split("T")[0]}
-                      {...register("date", { required: "Le champ date est requis" })}
+                      {...register("date", {
+                        required: "Le champ date est requis",
+                      })}
                     />
                     {errors.date && (
                       <span className="col-span-4 text-sm text-red-500">
