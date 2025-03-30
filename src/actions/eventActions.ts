@@ -32,4 +32,6 @@ export const getSpecificEvents = async (date: Date) => {
 
 export const deleteSpecificEvents = async (event:number) => {
   await db.delete(events).where(eq(events.id, event));
+  revalidatePath("/");
+
 }

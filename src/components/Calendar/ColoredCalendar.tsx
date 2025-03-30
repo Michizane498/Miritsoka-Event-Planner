@@ -15,7 +15,10 @@ import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { isSameDay } from "date-fns";
-import { deleteSpecificEvents, getSpecificEvents } from "@/actions/eventActions";
+import {
+  deleteSpecificEvents,
+  getSpecificEvents,
+} from "@/actions/eventActions";
 import {
   Dialog,
   DialogContent,
@@ -33,7 +36,7 @@ import {
 } from "../ui/dropdown-menu";
 
 export function CustomCalendar() {
-  const [selected, setSelected] = useState<Date>(new Date());
+  const [selected, setSelected] = useState<Date>();
   const [islistDialogOpen, setIslistDialogOpen] = useState(false);
   const [isdetailDialogOpen, setIsdetailDialogOpen] = useState(false);
   const [allbrownCells, setBrownCells] = useState<Date[]>([]);
@@ -76,44 +79,46 @@ export function CustomCalendar() {
       setSelectedEvent(normalizedDetails);
     }
   };
-  
+
   function handledetails(event: Selected) {
     setSelectedEventForDetails(event);
     setIslistDialogOpen(false);
     setIsdetailDialogOpen(true);
   }
   async function handledelete(event: number) {
-    await deleteSpecificEvents(event)
+    await deleteSpecificEvents(event);
+    setIslistDialogOpen(false);
+    fetchCalendarData();
   }
-  
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/calendar");
-        const data = (await response.json()) as CalendarEvent[];
-        const select = data.map((item: any) => new Date(item.date));
-        setData(select);
 
-        const brown = data
-          .filter((item: any) => item.color === "Miritsoka")
-          .map((item: any) => new Date(item.date));
-        setBrownCells(brown);
+  const fetchCalendarData = async () => {
+    try {
+      const response = await fetch("/api/calendar");
+      const data = (await response.json()) as CalendarEvent[];
+      const select = data.map((item: any) => new Date(item.date));
+      setData(select);
 
-        const green = data
-          .filter((item: any) => item.color === "Confirmé")
-          .map((item: any) => new Date(item.date));
-        setGreenCells(green);
+      const brown = data
+        .filter((item: any) => item.color === "Miritsoka")
+        .map((item: any) => new Date(item.date));
+      setBrownCells(brown);
 
-        const red = data
-          .filter((item: any) => item.color === "Non confirmé")
-          .map((item: any) => new Date(item.date));
-        setRedCells(red);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      const green = data
+        .filter((item: any) => item.color === "Confirmé")
+        .map((item: any) => new Date(item.date));
+      setGreenCells(green);
+
+      const red = data
+        .filter((item: any) => item.color === "Non confirmé")
+        .map((item: any) => new Date(item.date));
+      setRedCells(red);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchCalendarData();
   }, []);
 
   return (
@@ -195,7 +200,7 @@ export function CustomCalendar() {
               {selected?.toLocaleDateString()}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription/>
+          <DialogDescription />
           <div className="space-y-4">
             {selectedEvent.map((event, index) => (
               <div
@@ -223,9 +228,10 @@ export function CustomCalendar() {
                           <Edit />
                           <span>Modifier</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handledelete(event.id)
-                        }>
-                          <Trash2 className="stroke-red-600"/>
+                        <DropdownMenuItem
+                          onClick={() => handledelete(event.id)}
+                        >
+                          <Trash2 className="stroke-red-600" />
                           <span className="text-red-600">Supprimer</span>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
@@ -243,7 +249,7 @@ export function CustomCalendar() {
           <DialogHeader>
             <DialogTitle>Details</DialogTitle>
           </DialogHeader>
-          <DialogDescription/>
+          <DialogDescription />
           {selectedEventForDetails && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
