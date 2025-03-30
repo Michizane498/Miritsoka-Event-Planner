@@ -10,7 +10,7 @@ export async function MyScrollArea() {
   return (
     <ScrollArea className="h-50 lg:h-[770px] rounded-xl border">
       <div className="p-4">
-        <h2 className="mb-4 text-sm font-semibold leading-none">Evenements</h2>
+        <h2 className="mb-4 text-sm font-semibold leading-none">Evenements a venir</h2>
         {data.map((tag) => (
           <div key={tag.id}>
             <div className="grid grid-cols-3">

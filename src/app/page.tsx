@@ -13,7 +13,7 @@ export default function page() {
               <h1 className="mt-6 max-w-[17ch] text-4xl md:text-5xl lg:text-[2.75rem] xl:text-5xl font-bold !leading-[1.2] tracking-tight">
                 Miritsoka Event Planner
               </h1>
-              <div className="flex-1/2 px-4 py-4 items-center ">
+              <div className="flex-1/2 py-4 items-center ">
                 <CustomCalendar/>
               </div>
             </CardContent>
