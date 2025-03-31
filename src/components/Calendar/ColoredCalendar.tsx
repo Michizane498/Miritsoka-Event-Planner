@@ -9,7 +9,7 @@ import {
   Ellipsis,
   Trash2,
 } from "lucide-react";
-import { DayPicker, getDefaultClassNames } from "react-day-picker";
+import { DayPicker, getDefaultClassNames, DayButtonProps, ChevronProps } from "react-day-picker";
 import { Button } from "../ui/button";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isSameDay } from "date-fns";
@@ -35,7 +35,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, Control, FieldErrors } from "react-hook-form";
 import { InsertEvent } from "@/db/schema";
 import { DialogClose } from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
@@ -52,14 +52,14 @@ type EventDetails = InsertEvent & {
 
 // ==================== Components ====================
 const DayPickerComponents = {
-  DayButton: (props: any) => (
+  DayButton: (props: DayButtonProps) => (
     <Button
       {...props}
       variant="ghost"
       className="lg:w-15 w-11 h-11 lg:h-15 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-sm"
     />
   ),
-  Chevron: ({ className, orientation, ...props }: any) => {
+  Chevron: ({ className, orientation, ...props }: ChevronProps) => {
     const Icon =
       orientation === "left"
         ? ChevronLeft
@@ -73,8 +73,8 @@ const DayPickerComponents = {
 const ConfirmationRadioGroup = ({
   control,
 }: {
-  control: any;
-  errors: any;
+  control: Control<EventDetails>;
+  errors: FieldErrors<EventDetails>;
 }) => (
   <Controller
     name="confirmation"
@@ -130,7 +130,19 @@ export function CustomCalendar() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<EventDetails>();
+  } = useForm<EventDetails>({
+    defaultValues: {
+      id: 0,
+      client: '',
+      place: '',
+      date: '',
+      materials: '',
+      focal: '',
+      confirmation: 'Miritsoka',
+      travel: null,
+      observation: null
+    }
+  });
 
   // Date utilities
   const today = useMemo(() => new Date(), []);
@@ -140,7 +152,7 @@ export function CustomCalendar() {
   const fetchCalendarData = useCallback(async () => {
     try {
       const response = await fetch("/api/calendar");
-      const data: CalendarEvent[] = await response.json();
+      const data: CalendarEvent[] = await response.json() as CalendarEvent[];
 
       const dates = data.map((item) => new Date(item.date));
       setEvents(dates);
