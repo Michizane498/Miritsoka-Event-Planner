@@ -56,7 +56,7 @@ const DayPickerComponents = {
     <Button
       {...props}
       variant="ghost"
-      className="lg:w-15 w-11 h-11 lg:h-15 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-sm"
+      className="lg:w-15 w-8 h-8 lg:h-15 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-sm"
     />
   ),
   Chevron: ({ className, orientation, ...props }: ChevronProps) => {
@@ -223,7 +223,7 @@ export function CustomCalendar() {
   }, [fetchCalendarData]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4">
       {/* Calendar View */}
       <DayPicker
         mode="single"
@@ -239,57 +239,50 @@ export function CustomCalendar() {
         disabled={[{ before: today }]}
         startMonth={startYear}
         classNames={{
-          month: "capitalize font-semibold",
+          month: "capitalize font-semibold text-sm sm:text-base",
           selected: "text-white",
-          root: `${
-            getDefaultClassNames().root
-          } shadow-none border rounded-sm p-5`,
-          day: "group rounded-sm",
-          caption_label: "text-base",
+          root: `${getDefaultClassNames().root} shadow-none border rounded-sm p-2 sm:p-4 md:p-5 w-full`,
+          day: "group rounded-sm text-xs sm:text-sm",
+          caption_label: "text-sm sm:text-base",
         }}
         components={DayPickerComponents}
       />
 
       {/* Events List Dialog */}
       <Dialog open={isListDialogOpen} onOpenChange={setIsListDialogOpen}>
-        <DialogContent>
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-md md:max-w-lg">
           <DialogHeader>
-            <DialogTitle>
-              Event{selectedEvents.length !== 1 ? "s" : ""} prevu le{" "}
-              {selectedDate?.toLocaleDateString()}
+            <DialogTitle className="text-lg sm:text-xl">
+              Event{selectedEvents.length !== 1 ? "s" : ""} prevu le {selectedDate?.toLocaleDateString()}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto">
             {selectedEvents.map((event) => (
-              <div key={event.id} className="border-b pb-4 last:border-b-0">
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Client</p>
-                    <p>{event.client}</p>
+              <div key={event.id} className="border-b pb-3 sm:pb-4 last:border-b-0">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                  <div className="truncate">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Client</p>
+                    <p className="truncate">{event.client}</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
-                    <p>{event.confirmation}</p>
+                  <div className="truncate">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Status</p>
+                    <p className="truncate">{event.confirmation}</p>
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="place-self-end pb-1">
-                        <Ellipsis className="size-5 lg:size-4 stroke-gray-500" />
+                      <button className="place-self-end">
+                        <Ellipsis className="size-4 sm:size-5 stroke-gray-500" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem
-                          onClick={() => handleEventDetails(event)}
-                        >
-                          <Edit className="mr-2" />
-                          Modifier
+                        <DropdownMenuItem onClick={() => handleEventDetails(event)}>
+                          <Edit className="mr-2 size-4" />
+                          <span className="text-sm">Modifier</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteEvent(event.id)}
-                        >
-                          <Trash2 className="mr-2 stroke-red-600" />
-                          <span className="text-red-600">Supprimer</span>
+                        <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)}>
+                          <Trash2 className="mr-2 size-4 stroke-red-600" />
+                          <span className="text-sm text-red-600">Supprimer</span>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
@@ -303,39 +296,36 @@ export function CustomCalendar() {
 
       {/* Event Details Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent>
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-md md:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Details</DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">Details</DialogTitle>
           </DialogHeader>
-          <DialogDescription/>
           {currentEvent && (
             <form onSubmit={handleSubmit(handleFormSubmit)}>
-              <div className="gap-x-6 gap-y-4 sm:grid-cols-2">
-                <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+              <div className="gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-sm text-muted-foreground">Client</p>
-                    <p>{currentEvent.client}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Client</p>
+                    <p className="text-sm sm:text-base">{currentEvent.client}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Lieux</p>
-                    <p>{currentEvent.place}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Lieux</p>
+                    <p className="text-sm sm:text-base">{currentEvent.place}</p>
                   </div>
-                  <div className="grid grid-cols-4 gap-4">
-                    <Label htmlFor="date" className="text-right">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-4 col-span-2">
+                    <Label htmlFor="date" className="text-xs sm:text-sm text-right self-center">
                       Date
                     </Label>
                     <Input
                       defaultValue={currentEvent.date}
                       type="date"
-                      className="col-span-3 text-muted-foreground"
+                      className="col-span-3 text-xs sm:text-sm"
                       id="date"
                       min={today.toISOString().split("T")[0]}
-                      {...register("date", {
-                        required: "Le champ date est requis",
-                      })}
+                      {...register("date", { required: "Le champ date est requis" })}
                     />
                     {errors.date && (
-                      <span className="col-span-4 text-sm text-red-500">
+                      <span className="col-span-4 text-xs sm:text-sm text-red-500">
                         {errors.date.message}
                       </span>
                     )}
@@ -345,11 +335,15 @@ export function CustomCalendar() {
                 <ConfirmationRadioGroup control={control} errors={errors} />
               </div>
 
-              <DialogFooter className="gap-5 mt-4 justify-end flex flex-row">
+              <DialogFooter className="gap-3 sm:gap-4 mt-4 justify-end flex flex-row">
                 <DialogClose asChild>
-                  <Button variant="secondary">Annuler</Button>
+                  <Button variant="secondary" size="sm" className="text-xs sm:text-sm">
+                    Annuler
+                  </Button>
                 </DialogClose>
-                <Button type="submit">Sauvegarder</Button>
+                <Button type="submit" size="sm" className="text-xs sm:text-sm">
+                  Sauvegarder
+                </Button>
               </DialogFooter>
             </form>
           )}
