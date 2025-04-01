@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export type FormValues = {
   client: string;
@@ -42,6 +43,13 @@ export function EventDialog() {
   });
 
   const onSubmit = async (data: FormValues) => {
+    toast("L'evenement a été ajouté avec succes", {
+      description: "Rafraichir la page pour voir les dernieres actus",
+      // action: {
+      //   label: "Undo",
+      //   onClick: () => console.log("Undo"),
+      // },
+    });
     await addEvents(data);
     setOpen(false);
   };
@@ -56,7 +64,9 @@ export function EventDialog() {
       </DialogTrigger>
       <DialogContent className="w-[95vw] max-w-[95vw] sm:w-full sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">Nouvel Événement</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
+            Nouvel Événement
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
@@ -208,21 +218,23 @@ export function EventDialog() {
                     className="w-full"
                   >
                     <div className="bg-gray-200 justify-between sm:justify-center w-full sm:w-[280px] h-9 p-1 rounded-2xl flex">
-                      {["Miritsoka", "Confirmé", "Non confirmé"].map((option) => (
-                        <RadioGroup.Item
-                          key={option}
-                          value={option}
-                          className={`font-semibold text-xs sm:text-[13px] data-[state=checked]:ring-[1px] w-[30%] sm:w-[90px] ring-border rounded-2xl flex items-center justify-center px-1 ${
-                            option === "Miritsoka"
-                              ? "data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-600"
-                              : option === "Confirmé"
-                              ? "data-[state=checked]:bg-green-400 data-[state=checked]:ring-green-500"
-                              : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
-                          } data-[state=checked]:text-primary-foreground`}
-                        >
-                          {option}
-                        </RadioGroup.Item>
-                      ))}
+                      {["Miritsoka", "Confirmé", "Non confirmé"].map(
+                        (option) => (
+                          <RadioGroup.Item
+                            key={option}
+                            value={option}
+                            className={`font-semibold text-xs sm:text-[13px] data-[state=checked]:ring-[1px] w-[30%] sm:w-[90px] ring-border rounded-2xl flex items-center justify-center px-1 ${
+                              option === "Miritsoka"
+                                ? "data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-600"
+                                : option === "Confirmé"
+                                ? "data-[state=checked]:bg-green-400 data-[state=checked]:ring-green-500"
+                                : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
+                            } data-[state=checked]:text-primary-foreground`}
+                          >
+                            {option}
+                          </RadioGroup.Item>
+                        )
+                      )}
                     </div>
                   </RadioGroup.Root>
                 )}
