@@ -4,7 +4,6 @@ import { db } from "@/db/drizzle";
 import { eq } from "drizzle-orm";
 import { events, InsertEvent } from "@/db/schema";
 import { revalidatePath } from "next/cache";
-import { toast } from "sonner";
 
 export const getEvents = async () => {
   return await db.select().from(events).orderBy(events.date);
