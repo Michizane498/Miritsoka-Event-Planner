@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Edit,
   Ellipsis,
-  Info,
   Trash2,
 } from "lucide-react";
 import {
@@ -68,6 +67,18 @@ type EventDetails = InsertEvent & {
   id: number;
 };
 
+const matos = [
+  "Sonorisation",
+  "Lumiere",
+  "Estrade",
+  "Ecran",
+  "Regie",
+  "Chapiteau",
+  "Pagode",
+  "Structure",
+  "Table",
+  "Chaise",
+];
 // ==================== Components ====================
 const DayPickerComponents = {
   DayButton: (props: DayButtonProps) => (
@@ -126,19 +137,6 @@ export function CustomCalendar() {
     },
   });
 
-  const matos = [
-    "Sonorisation",
-    "Lumiere",
-    "Estrade",
-    "Ecran",
-    "Regie",
-    "Chapiteau",
-    "Pagode",
-    "Structure",
-    "Table",
-    "Chaise",
-  ];
-
   // Date utilities
   const today = useMemo(() => new Date(), []);
   const startYear = useMemo(() => new Date(), []);
@@ -190,6 +188,7 @@ export function CustomCalendar() {
   const handleEventModifications = useCallback(
     (event: EventDetails) => {
       setCurrentEvent(event);
+      setSelectedMatos(event.materials ? event.materials.split(', ') : []);
       reset(event);
       setIsListDialogOpen(false);
       setIsDetailDialogOpen(true);
@@ -231,8 +230,14 @@ export function CustomCalendar() {
 
   // Initial data load
   useEffect(() => {
+    if (currentEvent) {
+      reset({
+        ...currentEvent,
+        materials: selectedMatos.join(', '),
+      });
+    }
     fetchCalendarData();
-  }, [fetchCalendarData]);
+  }, [fetchCalendarData, selectedMatos, currentEvent, reset]);
 
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4">
@@ -298,12 +303,12 @@ export function CustomCalendar() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem
-                          // onClick={() => handleEventDetails(event)}
+                        {/* <DropdownMenuItem
+                          onClick={() => handleEventDetails(event)}
                         >
                           <Info className="mr-2 size-4" />
                           <span className="text-sm">Details</span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem
                           onClick={() => handleEventModifications(event)}
                         >
