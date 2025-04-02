@@ -41,7 +41,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Controller, useForm, Control, FieldErrors } from "react-hook-form";
+import { Controller, useForm} from "react-hook-form";
 import { InsertEvent } from "@/db/schema";
 import { DialogClose } from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
