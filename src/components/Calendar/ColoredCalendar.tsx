@@ -544,47 +544,7 @@ export function CustomCalendar() {
                 </div>
 
                 {/* Confirmation Radio Group */}
-                <div className="space-y-2">
-                  <Label className="text-xs sm:text-sm">Confirmation</Label>
-                  <Controller
-                    defaultValue={currentEvent.confirmation}
-                    name="confirmation"
-                    control={control}
-                    rules={{ required: "Événement confirmé ?" }}
-                    render={({ field }) => (
-                      <RadioGroup.Root
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        className="w-full"
-                      >
-                        <div className="bg-primary-foreground justify-between sm:justify-center w-full sm:w-[280px] h-9 p-1 rounded-2xl flex">
-                          {["Miritsoka", "Confirmé", "Non confirmé"].map(
-                            (option) => (
-                              <RadioGroup.Item
-                                key={option}
-                                value={option}
-                                className={`font-semibold text-xs sm:text-[13px] data-[state=checked]:ring-[1px] w-[30%] sm:w-[90px] ring-border rounded-2xl flex items-center justify-center px-1 ${
-                                  option === "Miritsoka"
-                                    ? "data-[state=checked]:bg-green-700 data-[state=checked]:ring-green-600"
-                                    : option === "Confirmé"
-                                    ? "data-[state=checked]:bg-blue-400 data-[state=checked]:ring-blue-500"
-                                    : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
-                                } data-[state=checked]:text-primary-foreground`}
-                              >
-                                {option}
-                              </RadioGroup.Item>
-                            )
-                          )}
-                        </div>
-                      </RadioGroup.Root>
-                    )}
-                  />
-                  {errors.confirmation && (
-                    <span className="text-xs text-red-500">
-                      {errors.confirmation.message}
-                    </span>
-                  )}
-                </div>
+                <ConfirmationRadioGroup control={control} errors={errors} />
               </div>
 
               <DialogFooter className="gap-3 sm:gap-4 mt-4 justify-end flex flex-row">
