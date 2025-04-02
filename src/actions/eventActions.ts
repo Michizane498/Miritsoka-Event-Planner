@@ -12,6 +12,7 @@ export const getEvents = async () => {
 export const addEvents = async (data: InsertEvent) => {
   await db.insert(events).values({
     client: data.client,
+    bon: data.bon,
     place: data.place,
     date: data.date,
     travel: data.travel,
@@ -21,7 +22,7 @@ export const addEvents = async (data: InsertEvent) => {
     confirmation: data.confirmation,
   });
   
-  revalidatePath("/", "page");
+  revalidatePath("/");
 };
 
 export const getSpecificEvents = async (date: Date) => {

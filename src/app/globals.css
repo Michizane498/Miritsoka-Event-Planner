@@ -111,20 +111,20 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-.brown-marker {
-  background-color: rgb(204, 169, 133);
+.blue-marker {
+  background-color: rgb(120, 152, 223);
   color: white;
-  border-radius: 20%;
+  border-radius: 10%;
 }
 .green-marker {
   background-color: rgb(153, 245, 168);
   color: white;
-  border-radius: 20%;
+  border-radius: 10%;
 }
 .red-marker {
   background-color: rgb(250, 165, 165);
   color: white;
-  border-radius: 20%;
+  border-radius: 10%;
 }
 
 @layer base {

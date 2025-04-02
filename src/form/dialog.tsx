@@ -20,6 +20,7 @@ import { toast } from "sonner";
 
 export type FormValues = {
   client: string;
+  bon?: string;
   place: string;
   date: string;
   travel: number;
@@ -43,15 +44,16 @@ export function EventDialog() {
   });
 
   const onSubmit = async (data: FormValues) => {
+    await addEvents(data);
+    setOpen(false);
     toast("L'evenement a été ajouté avec succes", {
+      className:"font-bold",
       description: "Rafraichir la page pour voir les dernieres actus",
       // action: {
       //   label: "Undo",
       //   onClick: () => console.log("Undo"),
       // },
     });
-    await addEvents(data);
-    setOpen(false);
   };
 
   return (
@@ -88,6 +90,16 @@ export function EventDialog() {
                     {errors.client.message}
                   </span>
                 )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bon" className="text-xs sm:text-sm">
+                  Bon de commande
+                </Label>
+                <Input
+                  id="bon"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("bon")}
+                />
               </div>
 
               <div className="space-y-2">
@@ -217,7 +229,7 @@ export function EventDialog() {
                     value={field.value}
                     className="w-full"
                   >
-                    <div className="bg-gray-200 justify-between sm:justify-center w-full sm:w-[280px] h-9 p-1 rounded-2xl flex">
+                    <div className="bg-primary-foreground justify-between sm:justify-center w-full sm:w-[280px] h-9 p-1 rounded-2xl flex">
                       {["Miritsoka", "Confirmé", "Non confirmé"].map(
                         (option) => (
                           <RadioGroup.Item
@@ -225,9 +237,9 @@ export function EventDialog() {
                             value={option}
                             className={`font-semibold text-xs sm:text-[13px] data-[state=checked]:ring-[1px] w-[30%] sm:w-[90px] ring-border rounded-2xl flex items-center justify-center px-1 ${
                               option === "Miritsoka"
-                                ? "data-[state=checked]:bg-amber-700 data-[state=checked]:ring-orange-600"
+                                ? "data-[state=checked]:bg-green-700 data-[state=checked]:ring-green-600"
                                 : option === "Confirmé"
-                                ? "data-[state=checked]:bg-green-400 data-[state=checked]:ring-green-500"
+                                ? "data-[state=checked]:bg-blue-400 data-[state=checked]:ring-blue-500"
                                 : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
                             } data-[state=checked]:text-primary-foreground`}
                           >

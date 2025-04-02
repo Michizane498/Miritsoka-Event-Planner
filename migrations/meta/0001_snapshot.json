@@ -1,6 +1,6 @@
 {
-  "id": "5285aae4-95da-4c1b-9a91-e68f49ad56eb",
-  "prevId": "a9724cd0-2256-409f-9544-c21e9fa34d42",
+  "id": "7450fa6e-cd2b-48ab-be90-0c6684cb0d46",
+  "prevId": "ab24c5c4-aff0-482e-927d-d1f526ba86a2",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -20,6 +20,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "numero_bon_de_commande": {
+          "name": "numero_bon_de_commande",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "place": {
           "name": "place",
           "type": "varchar(255)",
@@ -28,7 +34,7 @@
         },
         "date": {
           "name": "date",
-          "type": "date",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -53,6 +59,12 @@
         },
         "focal": {
           "name": "focal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmation": {
+          "name": "confirmation",
           "type": "text",
           "primaryKey": false,
           "notNull": true

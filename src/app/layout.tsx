@@ -11,6 +11,7 @@ import { frFR } from '@clerk/localizations'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider localization={frFR}>
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <header className="flex self-end mt-5 items-center p-4 gap-4 h-16 fixed z-1">
           <SignedOut>
@@ -45,7 +46,14 @@ export default function RootLayout({
             <UserButton />
           </SignedIn>
         </header>
-        {children}
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         <Toaster />
       </body>
     </html>

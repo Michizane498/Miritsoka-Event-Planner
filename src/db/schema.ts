@@ -9,6 +9,7 @@ import {
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   client: varchar("client", { length: 255 }).notNull(),
+  bon: text("bon"),
   place: varchar("place", { length: 255 }).notNull(),
   date: text("date").notNull(),
   travel: integer("travel").default(0),

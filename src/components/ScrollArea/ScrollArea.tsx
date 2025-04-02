@@ -15,21 +15,21 @@ export async function MyScrollArea() {
         </h2>
         {data.map((tag) => (
           <div key={tag.id}>
-            <div className="grid grid-cols-1 sm:grid-cols-3">
+            <div className="grid grid-cols-1">
               <div className="text-sm truncate">{tag.client}</div>
-              <div className="text-sm sm:col-end-4 text-right sm:text-left">
+              <div className="text-sm col-end-4 text-right">
                 {tag.date}
               </div>
             </div>
-            <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-3">
+            <div className="mt-1.5 grid grid-cols-1">
               <div className="text-sm truncate">{tag.place}</div>
-              <div className="text-sm sm:col-end-4 text-right">
+              <div className="text-sm col-end-4 text-right">
                 <Badge
                   className={`rounded-full border-none text-white ${
                     tag.confirmation === "Miritsoka"
-                      ? "bg-gradient-to-r from-rose-950 to-orange-900"
-                      : tag.confirmation === "Confirmé"
-                      ? "bg-gradient-to-r from-lime-300 to-green-600"
+                    ? "bg-gradient-to-r from-lime-400 to-green-600"
+                    : tag.confirmation === "Confirmé"
+                    ? "bg-gradient-to-r from-blue-700 to-blue-900"
                       : "bg-gradient-to-r from-pink-700 to-red-600"
                   }`}
                 >
