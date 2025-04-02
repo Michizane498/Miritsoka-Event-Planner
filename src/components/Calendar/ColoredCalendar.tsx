@@ -446,7 +446,7 @@ export function CustomCalendar() {
           <AlertDialogHeader>
             <AlertDialogTitle>Etes vous sur?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action supprimera l'element choisi de facon permanente.
+              Cette action supprimera l&apos;element choisi de facon permanente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
