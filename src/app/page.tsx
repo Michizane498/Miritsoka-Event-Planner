@@ -12,12 +12,12 @@ export default function page() {
         {/* Main Calendar Section */}
         <div className="lg:col-span-2">
           <Card className="h-full w-full shadow-none">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className=" relative p-4 sm:p-6">
               <div className="grid grid-cols-2 items-center gap-4">
                 <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:max-w-[17ch] md:text-5xl lg:text-[2.75rem] xl:text-5xl">
                   Miritsoka Event Planner
                 </h1>
-                <div className="flex justify-end">
+                <div className="relative flex justify-end">
                   <ModeToggle />
                 </div>
               </div>
