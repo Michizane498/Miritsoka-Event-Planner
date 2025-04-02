@@ -46,6 +46,16 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 // ==================== Types ====================
 type CalendarEvent = {
@@ -93,7 +103,7 @@ const ConfirmationRadioGroup = ({
         value={field.value}
         className="col-span-3 my-2"
       >
-        <div className="bg-gray-200 justify-center w-[280px] mt-6 h-9 p-1 rounded-2xl flex">
+        <div className="bg-primary-foreground justify-center w-[280px] mt-6 h-9 p-1 rounded-2xl flex">
           {["Miritsoka", "Confirmé", "Non confirmé"].map((option) => (
             <RadioGroup.Item
               key={option}
@@ -128,6 +138,7 @@ export function CustomCalendar() {
 
   // Dialog states
   const [isListDialogOpen, setIsListDialogOpen] = useState(false);
+  const [deleteconfirmation, setDeleteconfirmation] = useState(false);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   // Form handling
@@ -205,7 +216,6 @@ export function CustomCalendar() {
       reset(event);
       setIsListDialogOpen(false);
       setIsDetailDialogOpen(true);
-
     },
     [reset]
   );
@@ -215,7 +225,7 @@ export function CustomCalendar() {
       await deleteSpecificEvents(id);
       setIsListDialogOpen(false);
       toast("L'evenement supprimé avec succes", {
-        className:"font-bold",
+        className: "font-bold",
         // action: {
         //   label: "Undo",
         //   onClick: () => console.log("Undo"),
@@ -231,7 +241,7 @@ export function CustomCalendar() {
       await updateEvents(data);
       setIsDetailDialogOpen(false);
       toast("L'evenement a été modifié avec succes", {
-        className:"font-bold",
+        className: "font-bold",
         // action: {
         //   label: "Undo",
         //   onClick: () => console.log("Undo"),
@@ -324,7 +334,7 @@ export function CustomCalendar() {
                           <span className="text-sm">Modifier</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleDeleteEvent(event.id)}
+                        onClick={() => setDeleteconfirmation(true)}
                         >
                           <Trash2 className="mr-2 size-4 stroke-red-600" />
                           <span className="text-sm text-red-600">
@@ -426,6 +436,31 @@ export function CustomCalendar() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Event Details Dialog */}
+      <AlertDialog
+        open={deleteconfirmation}
+        onOpenChange={setDeleteconfirmation}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Etes vous sur?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action supprimera l'element choisi de facon permanente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            {selectedEvents.map((event) => (
+              <span key={event.id} className="space-x-2">
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>
+                  Confirmer
+                </AlertDialogAction>
+              </span>
+            ))}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
