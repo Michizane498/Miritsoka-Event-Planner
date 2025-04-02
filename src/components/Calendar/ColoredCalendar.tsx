@@ -33,6 +33,7 @@ import {
 } from "../ui/dialog";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -135,6 +136,7 @@ export function CustomCalendar() {
   const [redCells, setRedCells] = useState<Date[]>([]);
   const [selectedEvents, setSelectedEvents] = useState<EventDetails[]>([]);
   const [currentEvent, setCurrentEvent] = useState<EventDetails | null>(null);
+  const [selectedMatos, setSelectedMatos] = useState<string[]>([]);
 
   // Dialog states
   const [isListDialogOpen, setIsListDialogOpen] = useState(false);
@@ -161,6 +163,19 @@ export function CustomCalendar() {
       observation: null,
     },
   });
+
+  const matos = [
+    "Sonorisation",
+    "Lumiere",
+    "Estrade",
+    "Ecran",
+    "Regie",
+    "Chapiteau",
+    "Pagode",
+    "Structure",
+    "Table",
+    "Chaise",
+  ];
 
   // Date utilities
   const today = useMemo(() => new Date(), []);
@@ -210,7 +225,7 @@ export function CustomCalendar() {
     [events]
   );
 
-  const handleEventDetails = useCallback(
+  const handleEventModifications = useCallback(
     (event: EventDetails) => {
       setCurrentEvent(event);
       reset(event);
@@ -219,6 +234,14 @@ export function CustomCalendar() {
     },
     [reset]
   );
+
+  const handleTagChange = (tag: string, checked: boolean) => {
+    if (checked) {
+      setSelectedMatos([...selectedMatos, tag]);
+    } else {
+      setSelectedMatos(selectedMatos.filter((t) => t !== tag));
+    }
+  };
 
   const handleDeleteEvent = useCallback(
     async (id: number) => {
@@ -314,19 +337,19 @@ export function CustomCalendar() {
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuGroup>
                         <DropdownMenuItem
-                          onClick={() => handleEventDetails(event)}
+                          // onClick={() => handleEventDetails(event)}
                         >
                           <Info className="mr-2 size-4" />
                           <span className="text-sm">Details</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleEventDetails(event)}
+                          onClick={() => handleEventModifications(event)}
                         >
                           <Edit className="mr-2 size-4" />
                           <span className="text-sm">Modifier</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                        onClick={() => setDeleteconfirmation(true)}
+                          onClick={() => setDeleteconfirmation(true)}
                         >
                           <Trash2 className="mr-2 size-4 stroke-red-600" />
                           <span className="text-sm text-red-600">
@@ -345,69 +368,223 @@ export function CustomCalendar() {
 
       {/* Event Details Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent className="w-full max-w-[95vw] sm:max-w-md md:max-w-lg">
+        <DialogContent className="w-[95vw] max-w-[95vw] sm:w-full sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Details</DialogTitle>
           </DialogHeader>
           {currentEvent && (
             <form onSubmit={handleSubmit(handleFormSubmit)}>
-              <div className="gap-3 sm:gap-4">
+              <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
+                {/* Client and Place Row */}
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
-                  <div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      Client
-                    </p>
-                    <p className="text-sm sm:text-base">
-                      {currentEvent.client}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      Lieux
-                    </p>
-                    <p className="text-sm sm:text-base">{currentEvent.place}</p>
-                  </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="observation" className="text-xs sm:text-sm">
-                      Observation
-                    </Label>
-                    <Textarea
-                      id="observation"
-                      defaultValue={
-                        currentEvent.observation ? currentEvent.observation : ""
-                      }
-                      className="min-h-[100px] sm:min-h-[120px] w-full text-xs sm:text-sm"
-                      {...register("observation")}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-2 sm:gap-4 col-span-2">
-                    <Label
-                      htmlFor="date"
-                      className="text-xs sm:text-sm text-right self-center"
-                    >
-                      Date
+                    <Label htmlFor="client" className="text-xs sm:text-sm">
+                      Client
                     </Label>
                     <Input
-                      defaultValue={currentEvent.date}
-                      type="date"
-                      className="col-span-3 text-xs sm:text-sm"
-                      id="date"
-                      min={today.toISOString().split("T")[0]}
-                      {...register("date", {
-                        required: "Le champ date est requis",
+                      id="client"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={currentEvent.client}
+                      {...register("client", {
+                        required: "Le champ client est requis",
                       })}
                     />
-                    {errors.date && (
-                      <span className="col-span-4 text-xs sm:text-sm text-red-500">
-                        {errors.date.message}
+                    {errors.client && (
+                      <span className="text-xs text-red-500">
+                        {errors.client.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="bon" className="text-xs sm:text-sm">
+                      Bon de commande
+                    </Label>
+                    <Input
+                      id="bon"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={currentEvent.bon ? currentEvent.bon : ""}
+                      {...register("bon")}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="place" className="text-xs sm:text-sm">
+                      Lieux
+                    </Label>
+                    <Input
+                      id="place"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={currentEvent.place}
+                      {...register("place", {
+                        required: "Le champ lieux est requis",
+                      })}
+                    />
+                    {errors.place && (
+                      <span className="text-xs text-red-500">
+                        {errors.place.message}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Materials */}
+                  <div className="space-y-2">
+                    <Label htmlFor="materials" className="text-xs sm:text-sm">
+                      Matériels
+                    </Label>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button className="text-xs" variant="outline">
+                          Materiels
+                          <ChevronDown />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent id="materials" className="w-44">
+                        {matos.map((tag) => (
+                          <DropdownMenuCheckboxItem
+                            checked={selectedMatos.includes(tag)}
+                            key={tag}
+                            onCheckedChange={(checked) =>
+                              handleTagChange(tag, checked)
+                            }
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            {tag}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>*
+                    </DropdownMenu>
+                    {errors.materials && (
+                      <span className="text-xs text-red-500">
+                        {errors.materials.message}
                       </span>
                     )}
                   </div>
                 </div>
 
-                <ConfirmationRadioGroup control={control} errors={errors} />
+                {/* Date and Travel Row */}
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="date" className="text-xs sm:text-sm">
+                      Date
+                    </Label>
+                    <Input
+                      defaultValue={currentEvent.date}
+                      type="date"
+                      className="w-full text-xs sm:text-sm"
+                      id="date"
+                      min={new Date().toISOString().split("T")[0]}
+                      {...register("date", {
+                        required: "Le champ date est requis",
+                      })}
+                    />
+                    {errors.date && (
+                      <span className="text-xs text-red-500">
+                        {errors.date.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="travel" className="text-xs sm:text-sm">
+                      Route (jours)
+                    </Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder="Nombre de jours"
+                      className="w-full text-xs sm:text-sm"
+                      id="travel"
+                      {...register("travel", {
+                        required: "Le champ route est requis",
+                        valueAsNumber: true,
+                      })}
+                    />
+                    {errors.travel && (
+                      <span className="text-xs text-red-500">
+                        {errors.travel.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Observation */}
+                <div className="space-y-2">
+                  <Label htmlFor="observation" className="text-xs sm:text-sm">
+                    Observation
+                  </Label>
+                  <Textarea
+                    id="observation"
+                    className="min-h-[100px] sm:min-h-[120px] w-full text-xs sm:text-sm"
+                    defaultValue={
+                      currentEvent.observation ? currentEvent.observation : ""
+                    }
+                    {...register("observation")}
+                  />
+                </div>
+
+                {/* Focal Point */}
+                <div className="space-y-2">
+                  <Label htmlFor="focal" className="text-xs sm:text-sm">
+                    Point Focal
+                  </Label>
+                  <Input
+                    id="focal"
+                    className="w-full text-xs sm:text-sm"
+                    defaultValue={currentEvent.focal}
+                    {...register("focal", {
+                      required: "Le champ focal est requis",
+                    })}
+                  />
+                  {errors.focal && (
+                    <span className="text-xs text-red-500">
+                      {errors.focal.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Confirmation Radio Group */}
+                <div className="space-y-2">
+                  <Label className="text-xs sm:text-sm">Confirmation</Label>
+                  <Controller
+                    defaultValue={currentEvent.confirmation}
+                    name="confirmation"
+                    control={control}
+                    rules={{ required: "Événement confirmé ?" }}
+                    render={({ field }) => (
+                      <RadioGroup.Root
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        className="w-full"
+                      >
+                        <div className="bg-primary-foreground justify-between sm:justify-center w-full sm:w-[280px] h-9 p-1 rounded-2xl flex">
+                          {["Miritsoka", "Confirmé", "Non confirmé"].map(
+                            (option) => (
+                              <RadioGroup.Item
+                                key={option}
+                                value={option}
+                                className={`font-semibold text-xs sm:text-[13px] data-[state=checked]:ring-[1px] w-[30%] sm:w-[90px] ring-border rounded-2xl flex items-center justify-center px-1 ${
+                                  option === "Miritsoka"
+                                    ? "data-[state=checked]:bg-green-700 data-[state=checked]:ring-green-600"
+                                    : option === "Confirmé"
+                                    ? "data-[state=checked]:bg-blue-400 data-[state=checked]:ring-blue-500"
+                                    : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
+                                } data-[state=checked]:text-primary-foreground`}
+                              >
+                                {option}
+                              </RadioGroup.Item>
+                            )
+                          )}
+                        </div>
+                      </RadioGroup.Root>
+                    )}
+                  />
+                  {errors.confirmation && (
+                    <span className="text-xs text-red-500">
+                      {errors.confirmation.message}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <DialogFooter className="gap-3 sm:gap-4 mt-4 justify-end flex flex-row">
