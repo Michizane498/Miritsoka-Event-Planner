@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { PlusIcon } from "lucide-react";
+import { ChevronDown, PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -77,7 +77,7 @@ export function EventDialog() {
   const onSubmit = async (data: FormValues) => {
     const formData = {
       ...data,
-      materials: selectedMatos.join(", "), // Convert array to string
+      materials: selectedMatos.join(", "),
     };
     await addEvents(formData);
     setOpen(false);
@@ -136,7 +136,8 @@ export function EventDialog() {
                   {...register("bon")}
                 />
               </div>
-
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="place" className="text-xs sm:text-sm">
                   Lieux
@@ -154,39 +155,40 @@ export function EventDialog() {
                   </span>
                 )}
               </div>
-            </div>
 
-            {/* Materials */}
-            <div className="space-y-2">
-              <Label htmlFor="materials" className="text-xs sm:text-sm">
-                Matériels
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">Materiels</Button>
-                </DropdownMenuTrigger>{" "}
-                <DropdownMenuContent id="materials" className="w-44">
-                  <DropdownMenuLabel>Selection des materiels</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {matos.map((tag) => (
-                    <DropdownMenuCheckboxItem
-                      checked={selectedMatos.includes(tag)}
-                      key={tag}
-                      onCheckedChange={(checked) =>
-                        handleTagChange(tag, checked)
-                      } // Prevent the dropdown menu from closing when the checkbox is clicked
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {tag}{" "}
-                    </DropdownMenuCheckboxItem>
-                  ))}{" "}
-                </DropdownMenuContent>{" "}
-              </DropdownMenu>
-              {errors.materials && (
-                <span className="text-xs text-red-500">
-                  {errors.materials.message}
-                </span>
-              )}
+              {/* Materials */}
+              <div className="space-y-2">
+                <Label htmlFor="materials" className="text-xs sm:text-sm">
+                  Matériels
+                </Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="text-xs" variant="outline">
+                      Materiels
+                      <ChevronDown />
+                    </Button>
+                  </DropdownMenuTrigger>{" "}
+                  <DropdownMenuContent id="materials" className="w-44">
+                    {matos.map((tag) => (
+                      <DropdownMenuCheckboxItem
+                        checked={selectedMatos.includes(tag)}
+                        key={tag}
+                        onCheckedChange={(checked) =>
+                          handleTagChange(tag, checked)
+                        }
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {tag}{" "}
+                      </DropdownMenuCheckboxItem>
+                    ))}{" "}
+                  </DropdownMenuContent>{" "}
+                </DropdownMenu>
+                {errors.materials && (
+                  <span className="text-xs text-red-500">
+                    {errors.materials.message}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Date and Travel Row */}

@@ -226,10 +226,6 @@ export function CustomCalendar() {
       setIsListDialogOpen(false);
       toast("L'evenement a été supprimé", {
         className: "font-bold",
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
       });
       fetchCalendarData();
     },
@@ -242,10 +238,6 @@ export function CustomCalendar() {
       setIsDetailDialogOpen(false);
       toast("L'evenement a été modifié avec succes", {
         className: "font-bold",
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
       });
       fetchCalendarData();
     },
