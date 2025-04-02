@@ -88,44 +88,6 @@ const DayPickerComponents = {
   },
 };
 
-const ConfirmationRadioGroup = ({
-  control,
-}: {
-  control: Control<EventDetails>;
-  errors: FieldErrors<EventDetails>;
-}) => (
-  <Controller
-    name="confirmation"
-    control={control}
-    rules={{ required: "Événement confirmé ?" }}
-    render={({ field }) => (
-      <RadioGroup.Root
-        onValueChange={field.onChange}
-        value={field.value}
-        className="col-span-3 my-2"
-      >
-        <div className="bg-primary-foreground justify-center w-[280px] mt-6 h-9 p-1 rounded-2xl flex">
-          {["Miritsoka", "Confirmé", "Non confirmé"].map((option) => (
-            <RadioGroup.Item
-              key={option}
-              value={option}
-              className={`font-semibold data-[state=checked]:ring-[1px] w-[90px] ring-border rounded-2xl pb-1 items-center px-1 ${
-                option === "Miritsoka"
-                  ? "data-[state=checked]:bg-green-600 data-[state=checked]:ring-green-500"
-                  : option === "Confirmé"
-                  ? "data-[state=checked]:bg-blue-400 data-[state=checked]:ring-blue-500"
-                  : "data-[state=checked]:bg-red-600 data-[state=checked]:ring-red-700"
-              } data-[state=checked]:text-primary-foreground`}
-            >
-              <span className="text-[13px]">{option}</span>
-            </RadioGroup.Item>
-          ))}
-        </div>
-      </RadioGroup.Root>
-    )}
-  />
-);
-
 // ==================== Main Component ====================
 export function CustomCalendar() {
   // State management
