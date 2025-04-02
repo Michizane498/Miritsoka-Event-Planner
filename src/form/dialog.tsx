@@ -17,6 +17,14 @@ import { PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export type FormValues = {
   client: string;
@@ -30,8 +38,31 @@ export type FormValues = {
   confirmation: string;
 };
 
+const matos = [
+  "Sonorisation",
+  "Lumiere",
+  "Estrade",
+  "Ecran",
+  "Regie",
+  "Chapiteau",
+  "Pagode",
+  "Structure",
+  "Table",
+  "Chaise",
+];
+
 export function EventDialog() {
   const [open, setOpen] = useState(false);
+  const [selectedMatos, setSelectedMatos] = useState<string[]>([]);
+
+  const handleTagChange = (tag: string, checked: boolean) => {
+    if (checked) {
+      setSelectedMatos([...selectedMatos, tag]);
+    } else {
+      setSelectedMatos(selectedMatos.filter((t) => t !== tag));
+    }
+  };
+
   const {
     control,
     register,
@@ -44,10 +75,14 @@ export function EventDialog() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    await addEvents(data);
+    const formData = {
+      ...data,
+      materials: selectedMatos.join(", "), // Convert array to string
+    };
+    await addEvents(formData);
     setOpen(false);
     toast("L'evenement a été ajouté avec succes", {
-      className:"font-bold",
+      className: "font-bold",
       description: "Rafraichir la page pour voir les dernieres actus",
       // action: {
       //   label: "Undo",
@@ -121,6 +156,39 @@ export function EventDialog() {
               </div>
             </div>
 
+            {/* Materials */}
+            <div className="space-y-2">
+              <Label htmlFor="materials" className="text-xs sm:text-sm">
+                Matériels
+              </Label>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">Materiels</Button>
+                </DropdownMenuTrigger>{" "}
+                <DropdownMenuContent id="materials" className="w-44">
+                  <DropdownMenuLabel>Selection des materiels</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {matos.map((tag) => (
+                    <DropdownMenuCheckboxItem
+                      checked={selectedMatos.includes(tag)}
+                      key={tag}
+                      onCheckedChange={(checked) =>
+                        handleTagChange(tag, checked)
+                      } // Prevent the dropdown menu from closing when the checkbox is clicked
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {tag}{" "}
+                    </DropdownMenuCheckboxItem>
+                  ))}{" "}
+                </DropdownMenuContent>{" "}
+              </DropdownMenu>
+              {errors.materials && (
+                <span className="text-xs text-red-500">
+                  {errors.materials.message}
+                </span>
+              )}
+            </div>
+
             {/* Date and Travel Row */}
             <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -164,25 +232,6 @@ export function EventDialog() {
                   </span>
                 )}
               </div>
-            </div>
-
-            {/* Materials */}
-            <div className="space-y-2">
-              <Label htmlFor="materials" className="text-xs sm:text-sm">
-                Matériels
-              </Label>
-              <Input
-                id="materials"
-                className="w-full text-xs sm:text-sm"
-                {...register("materials", {
-                  required: "Le champ matériels est requis",
-                })}
-              />
-              {errors.materials && (
-                <span className="text-xs text-red-500">
-                  {errors.materials.message}
-                </span>
-              )}
             </div>
 
             {/* Observation */}

@@ -224,7 +224,7 @@ export function CustomCalendar() {
     async (id: number) => {
       await deleteSpecificEvents(id);
       setIsListDialogOpen(false);
-      toast("L'evenement supprimé avec succes", {
+      toast("L'evenement a été supprimé", {
         className: "font-bold",
         // action: {
         //   label: "Undo",
