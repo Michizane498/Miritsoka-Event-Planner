@@ -4,30 +4,33 @@ import { EventDialog } from "@/form/dialog";
 import { MyScrollArea } from "@/components/ScrollArea/ScrollArea";
 import { CustomCalendar } from "@/components/Calendar/ColoredCalendar";
 import { ModeToggle } from "@/components/Themetoggle/Themetogglebutton";
+
 export default function page() {
   return (
-    <div className="max-h-screen flex items-center justify-center overflow-hidden">
-      <div className=" min-h-screen max-w-screen-xl w-full mx-auto grid lg:grid-cols-3 lg:mt-10 gap-8 px-6 py-12 lg:py-0">
-        <div className="w-full lg:col-span-2 lg:aspect-auto lg:w-[850px] lg:h-[calc(100vh-4rem)] bg-accent rounded-xl">
-          <Card className="relative h-full max-w-[1400px] w-full items-center wx-auto shadow-none">
-            <CardContent>
-              <div className="lg:mx-4 grid grid-cols-2">
-                <h1 className="mt-6 max-w-[17ch] text-4xl md:text-5xl lg:text-[2.75rem] xl:text-5xl font-bold !leading-[1.2] tracking-tight">
+    <div className="min-h-screen w-full overflow-auto">
+      <div className="container mx-auto grid min-h-screen w-full grid-cols-1 gap-4 px-4 py-8 lg:grid-cols-3 lg:px-8 lg:py-12">
+        {/* Main Calendar Section */}
+        <div className="lg:col-span-2">
+          <Card className="h-full w-full shadow-none">
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-2 items-center gap-4">
+                <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:max-w-[17ch] md:text-5xl lg:text-[2.75rem] xl:text-5xl">
                   Miritsoka Event Planner
                 </h1>
-                <span className="place-self-end">
+                <div className="flex justify-end">
                   <ModeToggle />
-                </span>
+                </div>
               </div>
-              <div className="flex-1/2 py-4 items-center ">
+              <div className="py-4 md:py-6">
                 <CustomCalendar />
               </div>
             </CardContent>
           </Card>
         </div>
-        <div className="my-3 sm:py-10">
-          <div className="grid px-3 mx-3 gap-3">
-            {/* Event list */}
+
+        {/* Events Sidebar */}
+        <div className="lg:sticky lg:top-0 lg:h-screen lg:py-8">
+          <div className="grid h-full gap-4">
             <EventDialog />
             <MyScrollArea />
           </div>
