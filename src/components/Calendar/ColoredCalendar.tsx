@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Edit,
   Ellipsis,
+  Info,
   Trash2,
 } from "lucide-react";
 import {
@@ -40,7 +41,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Controller, useForm} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { InsertEvent } from "@/db/schema";
 import { DialogClose } from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
@@ -188,7 +189,7 @@ export function CustomCalendar() {
   const handleEventModifications = useCallback(
     (event: EventDetails) => {
       setCurrentEvent(event);
-      setSelectedMatos(event.materials ? event.materials.split(', ') : []);
+      setSelectedMatos(event.materials ? event.materials.split(", ") : []);
       reset(event);
       setIsListDialogOpen(false);
       setIsDetailDialogOpen(true);
@@ -233,7 +234,7 @@ export function CustomCalendar() {
     if (currentEvent) {
       reset({
         ...currentEvent,
-        materials: selectedMatos.join(', '),
+        materials: selectedMatos.join(", "),
       });
     }
     fetchCalendarData();
@@ -306,14 +307,14 @@ export function CustomCalendar() {
                         {/* <DropdownMenuItem
                           onClick={() => handleEventDetails(event)}
                         >
-                          <Info className="mr-2 size-4" />
-                          <span className="text-sm">Details</span>
+                        <Edit className="mr-2 size-4" />
+                        <span className="text-sm">Details</span>
                         </DropdownMenuItem> */}
                         <DropdownMenuItem
                           onClick={() => handleEventModifications(event)}
                         >
-                          <Edit className="mr-2 size-4" />
-                          <span className="text-sm">Modifier</span>
+                          <Info className="mr-2 size-4" />
+                          <span className="text-sm">Details/Modifier</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => setDeleteconfirmation(true)}
