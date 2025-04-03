@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Edit,
   Ellipsis,
   Info,
   Trash2,
