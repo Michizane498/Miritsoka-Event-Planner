@@ -78,7 +78,14 @@ const matos = [
   "Structure",
   "Table",
   "Chaise",
+  "Groupe 100 KVA Fotsy",
+  "Groupe 40 KVA Mavo",
+  "Groupe 25 KVA Mavo",
+  "Groupe 25 KVA Mainty",
+  "Groupe 10 KVA Fotsy",
+  "Groupe Location",
 ];
+
 // ==================== Components ====================
 const DayPickerComponents = {
   DayButton: (props: DayButtonProps) => (
@@ -406,7 +413,7 @@ export function CustomCalendar() {
                           <ChevronDown />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent id="materials" className="w-44">
+                      <DropdownMenuContent id="materials" className="w-100 grid grid-cols-2">
                         {matos.map((tag) => (
                           <DropdownMenuCheckboxItem
                             checked={selectedMatos.includes(tag)}
