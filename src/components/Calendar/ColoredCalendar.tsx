@@ -44,7 +44,6 @@ import { Controller, useForm } from "react-hook-form";
 import { InsertEvent } from "@/db/schema";
 import { DialogClose } from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -134,13 +133,15 @@ export function CustomCalendar() {
     defaultValues: {
       id: 0,
       client: "",
+      eventname: "",
+      bonsortie: "",
+      boncommande: "",
       place: "",
       date: "",
       materials: "",
       focal: "",
       confirmation: "Miritsoka",
       travel: null,
-      observation: null,
     },
   });
 
@@ -349,7 +350,7 @@ export function CustomCalendar() {
           {currentEvent && (
             <form onSubmit={handleSubmit(handleFormSubmit)}>
               <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
-                {/* Client and Place Row */}
+                {/* Client and Eventname Row */}
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="client" className="text-xs sm:text-sm">
@@ -370,17 +371,52 @@ export function CustomCalendar() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="bon" className="text-xs sm:text-sm">
+                    <Label htmlFor="eventname" className="text-xs sm:text-sm">
+                      Nom de l&apos;evenement
+                    </Label>
+                    <Input
+                      id="eventname"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={currentEvent.eventname}
+                      {...register("eventname", {
+                        required: "Le champ nom de l'evenement est requis",
+                      })}
+                    />
+                    {errors.eventname && (
+                      <span className="text-xs text-red-500">
+                        {errors.eventname.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="boncommande" className="text-xs sm:text-sm">
                       Bon de commande
                     </Label>
                     <Input
-                      id="bon"
+                      id="boncommande"
                       className="w-full text-xs sm:text-sm"
-                      defaultValue={currentEvent.bon ? currentEvent.bon : ""}
-                      {...register("bon")}
+                      defaultValue={
+                        currentEvent.boncommande ? currentEvent.boncommande : ""
+                      }
+                      {...register("boncommande")}
                     />
                   </div>
+                                  {/* Bonsortie */}
+                <div className="space-y-2">
+                  <Label htmlFor="bonsortie" className="text-xs sm:text-sm">
+                    Bon de sortie
+                  </Label>
+                  <Input
+                    id="bonsortie"
+                    className="w-full text-xs sm:text-sm"
+                    defaultValue={
+                      currentEvent.bonsortie ? currentEvent.bonsortie : ""
+                    }
+                    {...register("bonsortie")}
+                  />
                 </div>
+                </div>
+
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="place" className="text-xs sm:text-sm">
@@ -413,7 +449,10 @@ export function CustomCalendar() {
                           <ChevronDown />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent id="materials" className="w-100 grid grid-cols-2">
+                      <DropdownMenuContent
+                        id="materials"
+                        className="w-100 grid grid-cols-2"
+                      >
                         {matos.map((tag) => (
                           <DropdownMenuCheckboxItem
                             checked={selectedMatos.includes(tag)}
@@ -482,20 +521,6 @@ export function CustomCalendar() {
                   </div>
                 </div>
 
-                {/* Observation */}
-                <div className="space-y-2">
-                  <Label htmlFor="observation" className="text-xs sm:text-sm">
-                    Observation
-                  </Label>
-                  <Textarea
-                    id="observation"
-                    className="min-h-[100px] sm:min-h-[120px] w-full text-xs sm:text-sm"
-                    defaultValue={
-                      currentEvent.observation ? currentEvent.observation : ""
-                    }
-                    {...register("observation")}
-                  />
-                </div>
 
                 {/* Focal Point */}
                 <div className="space-y-2">

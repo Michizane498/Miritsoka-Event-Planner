@@ -1,5 +1,5 @@
 {
-  "id": "ab24c5c4-aff0-482e-927d-d1f526ba86a2",
+  "id": "ac4df85f-930e-4400-a8af-a121710f080f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -20,9 +20,21 @@
           "primaryKey": false,
           "notNull": true
         },
-        "numero_bon_de_commande": {
-          "name": "numero_bon_de_commande",
+        "eventname": {
+          "name": "eventname",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bon_de_commande": {
+          "name": "bon_de_commande",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bon_de_sortie": {
+          "name": "bon_de_sortie",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -50,12 +62,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "observation": {
-          "name": "observation",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "focal": {
           "name": "focal",

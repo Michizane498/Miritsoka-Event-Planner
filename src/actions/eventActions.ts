@@ -12,12 +12,13 @@ export const getEvents = async () => {
 export const addEvents = async (data: InsertEvent) => {
   await db.insert(events).values({
     client: data.client,
-    bon: data.bon,
+    eventname: data.eventname,
+    boncommande: data.boncommande,
+    bonsortie: data.bonsortie,
     place: data.place,
     date: data.date,
     travel: data.travel,
     materials: data.materials,
-    observation: data.observation,
     focal: data.focal,
     confirmation: data.confirmation,
   });
@@ -42,11 +43,13 @@ export const deleteSpecificEvents = async (event: number) => {
 export const updateEvents = async (data: {
   id: number;
   client: string;
+  eventname: string;
+  boncommande?: string | null;
+  bonsortie?: string | null;
   place: string;
   date: string;
   travel?: number | null;
   materials: string;
-  observation?: string | null;
   focal: string;
   confirmation: string;
 }) => {
@@ -56,11 +59,13 @@ export const updateEvents = async (data: {
     .update(events)
     .set({
       client: data.client,
+      eventname: data.eventname,
+      boncommande: data.boncommande,
+      bonsortie: data.bonsortie,
       place: data.place,
       date: data.date,
       travel: data.travel,
       materials: data.materials,
-      observation: data.observation,
       focal: data.focal,
       confirmation: data.confirmation,
     })

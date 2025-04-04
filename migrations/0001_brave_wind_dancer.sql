@@ -1,1 +1,0 @@
-ALTER TABLE "events" ALTER COLUMN "numero_bon_de_commande" SET DATA TYPE text;

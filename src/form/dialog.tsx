@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { ChevronDown, PlusIcon } from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useState } from "react";
@@ -26,7 +25,9 @@ import {
 
 export type FormValues = {
   client: string;
-  bon?: string;
+  eventname: string;
+  boncommande?: string;
+  bonsortie?: string;
   place: string;
   date: string;
   travel: number;
@@ -131,15 +132,47 @@ export function EventDialog() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bon" className="text-xs sm:text-sm">
+                <Label htmlFor="eventname" className="text-xs sm:text-sm">
+                  Nom de l&apos;evenement
+                </Label>
+                <Input
+                  id="eventname"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("eventname", {
+                    required: "Le champ nom de l'evenement est requis",
+                  })}
+                />
+                {errors.eventname && (
+                  <span className="text-xs text-red-500">
+                    {errors.eventname.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Bondecommande */}
+              <div className="space-y-2">
+                <Label htmlFor="boncommande" className="text-xs sm:text-sm">
                   Bon de commande
                 </Label>
                 <Input
-                  id="bon"
+                  id="boncommande"
                   className="w-full text-xs sm:text-sm"
-                  {...register("bon")}
+                  {...register("boncommande")}
                 />
               </div>
+
+              {/* Bondesortie */}
+              <div className="space-y-2">
+                <Label htmlFor="observation" className="text-xs sm:text-sm">
+                  Bon de sortie
+                </Label>
+                <Input
+                  id="observation"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("observation")}
+                />
+              </div>
+              
             </div>
             <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -172,7 +205,10 @@ export function EventDialog() {
                       <ChevronDown />
                     </Button>
                   </DropdownMenuTrigger>{" "}
-                  <DropdownMenuContent id="materials" className="w-100 grid grid-cols-2">
+                  <DropdownMenuContent
+                    id="materials"
+                    className="w-100 grid grid-cols-2"
+                  >
                     {matos.map((tag) => (
                       <DropdownMenuCheckboxItem
                         checked={selectedMatos.includes(tag)}
@@ -238,18 +274,6 @@ export function EventDialog() {
                   </span>
                 )}
               </div>
-            </div>
-
-            {/* Observation */}
-            <div className="space-y-2">
-              <Label htmlFor="observation" className="text-xs sm:text-sm">
-                Observation
-              </Label>
-              <Textarea
-                id="observation"
-                className="min-h-[100px] sm:min-h-[120px] w-full text-xs sm:text-sm"
-                {...register("observation")}
-              />
             </div>
 
             {/* Focal Point */}

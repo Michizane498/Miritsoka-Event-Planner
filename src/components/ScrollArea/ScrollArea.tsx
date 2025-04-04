@@ -22,7 +22,7 @@ export async function MyScrollArea() {
               </div>
             </div>
             <div className="mt-1.5 grid grid-cols-1">
-              <div className="text-sm truncate">{tag.place}</div>
+              <div className="text-sm truncate">{tag.eventname}</div>
               <div className="text-sm col-end-4 text-right">
                 <Badge
                   className={`rounded-full border-none text-white ${
