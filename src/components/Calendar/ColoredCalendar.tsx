@@ -2,6 +2,7 @@
 
 import { fr } from "date-fns/locale";
 import {
+  CalendarIcon,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -14,13 +15,23 @@ import {
   getDefaultClassNames,
   DayButtonProps,
   ChevronProps,
+  DateRange,
 } from "react-day-picker";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "../ui/button";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { isSameDay } from "date-fns";
+import {
+  isSameDay,
+  format,
+  parseISO,
+  isWithinInterval,
+} from "date-fns";
 import {
   deleteSpecificEvents,
-  getSpecificEvents,
   updateEvents,
 } from "@/actions/eventActions";
 import {
@@ -55,12 +66,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 // ==================== Types ====================
-type CalendarEvent = {
-  date: string;
-  color: string;
-};
 
 type EventDetails = InsertEvent & {
   id: number;
@@ -109,13 +117,15 @@ const DayPickerComponents = {
 export function CustomCalendar() {
   // State management
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [events, setEvents] = useState<Date[]>([]);
-  const [blueCells, setBlueCells] = useState<Date[]>([]);
-  const [greenCells, setGreenCells] = useState<Date[]>([]);
-  const [redCells, setRedCells] = useState<Date[]>([]);
+  const [events, setEvents] = useState<EventDetails[]>([]);
+  const [blueRanges, setBlueRanges] = useState<DateRange[]>([]);
+  const [greenRanges, setGreenRanges] = useState<DateRange[]>([]);
+  const [redRanges, setRedRanges] = useState<DateRange[]>([]);
   const [selectedEvents, setSelectedEvents] = useState<EventDetails[]>([]);
   const [currentEvent, setCurrentEvent] = useState<EventDetails | null>(null);
   const [selectedMatos, setSelectedMatos] = useState<string[]>([]);
+
+  const [date, setDate] = useState<DateRange | undefined>();
 
   // Dialog states
   const [isListDialogOpen, setIsListDialogOpen] = useState(false);
@@ -145,6 +155,15 @@ export function CustomCalendar() {
     },
   });
 
+  const parseDateRange = (dateStr: string): DateRange => {
+    if (!dateStr) return { from: undefined, to: undefined };
+
+    const parts = dateStr.split(" to ");
+    const from = parts[0] ? parseISO(parts[0]) : undefined;
+    const to = parts[1] ? parseISO(parts[1]) : undefined;
+    return { from, to };
+  };
+
   // Date utilities
   const today = useMemo(() => new Date(), []);
   const startYear = useMemo(() => new Date(), []);
@@ -153,40 +172,54 @@ export function CustomCalendar() {
   const fetchCalendarData = useCallback(async () => {
     try {
       const response = await fetch("/api/calendar");
-      const data: CalendarEvent[] = (await response.json()) as CalendarEvent[];
+      const data: EventDetails[] = await response.json();
 
-      const dates = data.map((item) => new Date(item.date));
-      setEvents(dates);
+      setEvents(data);
 
-      setGreenCells(
-        data
-          .filter((item) => item.color === "Miritsoka")
-          .map((item) => new Date(item.date))
-      );
-      setBlueCells(
-        data
-          .filter((item) => item.color === "Confirmé")
-          .map((item) => new Date(item.date))
-      );
-      setRedCells(
-        data
-          .filter((item) => item.color === "Non confirmé")
-          .map((item) => new Date(item.date))
-      );
+      const blue: DateRange[] = [];
+      const green: DateRange[] = [];
+      const red: DateRange[] = [];
+
+      data.forEach((event) => {
+        const range = parseDateRange(event.date);
+        if (event.confirmation === "Miritsoka") {
+          green.push(range);
+        } else if (event.confirmation === "Confirmé") {
+          blue.push(range);
+        } else if (event.confirmation === "Non confirmé") {
+          red.push(range);
+        }
+      });
+
+      setGreenRanges(green);
+      setBlueRanges(blue);
+      setRedRanges(red);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching calendar data:", error);
+      toast.error("Erreur lors du chargement des données", {
+        description: "Veuillez réessayer plus tard",
+      });
     }
   }, []);
 
   // Event handlers
   const handleDayClick = useCallback(
     async (date: Date) => {
-      const found = events.find((d) => isSameDay(d, date));
-      setSelectedDate(date);
+      const eventsOnDate = events.filter((event) => {
+        const range = parseDateRange(event.date);
+        if (!range.from) return false;
 
-      if (found) {
-        const details = await getSpecificEvents(found);
-        setSelectedEvents(Array.isArray(details) ? details : [details]);
+        if (range.to) {
+          return isWithinInterval(date, {
+            start: range.from,
+            end: range.to,
+          });
+        }
+        return isSameDay(date, range.from);
+      });
+      setSelectedDate(date);
+      setSelectedEvents(eventsOnDate);
+      if (eventsOnDate.length > 0) {
         setIsListDialogOpen(true);
       }
     },
@@ -197,6 +230,7 @@ export function CustomCalendar() {
     (event: EventDetails) => {
       setCurrentEvent(event);
       setSelectedMatos(event.materials ? event.materials.split(", ") : []);
+      setDate(parseDateRange(event.date));
       reset(event);
       setIsListDialogOpen(false);
       setIsDetailDialogOpen(true);
@@ -238,14 +272,23 @@ export function CustomCalendar() {
 
   // Initial data load
   useEffect(() => {
-    if (currentEvent) {
+    if (date) {
+      const dateString = date.from
+        ? date.to
+          ? `${format(date.from, "yyyy-MM-dd")} to ${format(
+              date.to,
+              "yyyy-MM-dd"
+            )}`
+          : format(date.from, "yyyy-MM-dd")
+        : "";
       reset({
         ...currentEvent,
         materials: selectedMatos.join(", "),
+        date: dateString,
       });
     }
     fetchCalendarData();
-  }, [fetchCalendarData, selectedMatos, currentEvent, reset]);
+  }, [fetchCalendarData, selectedMatos, date, currentEvent, reset]);
 
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4">
@@ -255,11 +298,11 @@ export function CustomCalendar() {
         locale={fr}
         selected={selectedDate}
         onDayClick={handleDayClick}
-        modifiers={{ blueCells, greenCells, redCells }}
+        modifiers={{ blueRanges, greenRanges, redRanges }}
         modifiersClassNames={{
-          blueCells: "blue-marker",
-          greenCells: "green-marker",
-          redCells: "red-marker",
+          blueRanges: "blue-marker",
+          greenRanges: "green-marker",
+          redRanges: "red-marker",
         }}
         disabled={[{ before: today }]}
         startMonth={startYear}
@@ -281,7 +324,7 @@ export function CustomCalendar() {
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">
               Event{selectedEvents.length !== 1 ? "s" : ""} prevu le{" "}
-              {selectedDate?.toLocaleDateString()}
+              {selectedDate?.toLocaleDateString("fr-FR")}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto">
@@ -401,20 +444,20 @@ export function CustomCalendar() {
                       {...register("boncommande")}
                     />
                   </div>
-                                  {/* Bonsortie */}
-                <div className="space-y-2">
-                  <Label htmlFor="bonsortie" className="text-xs sm:text-sm">
-                    Bon de sortie
-                  </Label>
-                  <Input
-                    id="bonsortie"
-                    className="w-full text-xs sm:text-sm"
-                    defaultValue={
-                      currentEvent.bonsortie ? currentEvent.bonsortie : ""
-                    }
-                    {...register("bonsortie")}
-                  />
-                </div>
+                  {/* Bonsortie */}
+                  <div className="space-y-2">
+                    <Label htmlFor="bonsortie" className="text-xs sm:text-sm">
+                      Bon de sortie
+                    </Label>
+                    <Input
+                      id="bonsortie"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={
+                        currentEvent.bonsortie ? currentEvent.bonsortie : ""
+                      }
+                      {...register("bonsortie")}
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
@@ -467,35 +510,96 @@ export function CustomCalendar() {
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    {errors.materials && (
-                      <span className="text-xs text-red-500">
-                        {errors.materials.message}
-                      </span>
+                    {selectedMatos.length > 0 && (
+                      <div className="text-xs text-muted-foreground">
+                        Sélectionné: {selectedMatos.join(", ")}
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {/* Date and Travel Row */}
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
+                  {/* Date */}
+                  <div className={cn("grid gap-2")}>
                     <Label htmlFor="date" className="text-xs sm:text-sm">
                       Date
                     </Label>
-                    <Input
-                      defaultValue={currentEvent.date}
-                      type="date"
-                      className="w-full text-xs sm:text-sm"
-                      id="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      {...register("date", {
-                        required: "Le champ date est requis",
-                      })}
-                    />
-                    {errors.date && (
-                      <span className="text-xs text-red-500">
-                        {errors.date.message}
-                      </span>
-                    )}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          id="date"
+                          variant={"outline"}
+                          className={cn(
+                            "w-[300px] justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {date?.from ? (
+                            date.to ? (
+                              <>
+                                {format(date.from, "LLL dd, y")} -{" "}
+                                {format(date.to, "LLL dd, y")}
+                              </>
+                            ) : (
+                              format(date.from, "LLL dd, y")
+                            )
+                          ) : (
+                            <span>Choisissez un date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <DayPicker
+                          mode="range"
+                          defaultMonth={date?.from}
+                          selected={date}
+                          onSelect={setDate}
+                          locale={fr}
+                          id="date"
+                          disabled={[{ before: today }]}
+                          classNames={{
+                            month:
+                              "capitalize font-semibold text-sm sm:text-base",
+                            selected: "text-white",
+                            root: `${
+                              getDefaultClassNames().root
+                            } shadow-none border rounded-sm p-2 sm:p-4 md:p-5 w-full`,
+                            day: "group rounded-sm text-xs sm:text-sm",
+                            caption_label: "text-sm sm:text-base",
+                          }}
+                          numberOfMonths={1}
+                          components={{
+                            DayButton: (props: DayButtonProps) => (
+                              <Button
+                                {...props}
+                                variant="ghost"
+                                className="w-8 h-8 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-[3px]"
+                              />
+                            ),
+                            Chevron: ({
+                              className,
+                              orientation,
+                              ...props
+                            }: ChevronProps) => {
+                              const Icon =
+                                orientation === "left"
+                                  ? ChevronLeft
+                                  : orientation === "right"
+                                  ? ChevronRight
+                                  : ChevronDown;
+                              return (
+                                <Icon
+                                  className={`${className} w-6 h-6`}
+                                  {...props}
+                                />
+                              );
+                            },
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
 
                   <div className="space-y-2">
@@ -520,7 +624,6 @@ export function CustomCalendar() {
                     )}
                   </div>
                 </div>
-
 
                 {/* Focal Point */}
                 <div className="space-y-2">
@@ -618,14 +721,12 @@ export function CustomCalendar() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            {selectedEvents.map((event) => (
-              <span key={event.id} className="space-x-2">
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction onClick={() => handleDeleteEvent(event.id)}>
-                  Confirmer
-                </AlertDialogAction>
-              </span>
-            ))}
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => currentEvent && handleDeleteEvent(currentEvent.id)}
+            >
+              Confirmer
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

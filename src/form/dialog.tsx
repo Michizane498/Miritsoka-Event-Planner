@@ -12,9 +12,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
-import { ChevronDown, PlusIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  PlusIcon,
+} from "lucide-react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -22,6 +28,21 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  ChevronProps,
+  DateRange,
+  DayButtonProps,
+  DayPicker,
+  getDefaultClassNames,
+} from "react-day-picker";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { fr } from "date-fns/locale";
 
 export type FormValues = {
   client: string;
@@ -32,10 +53,10 @@ export type FormValues = {
   date: string;
   travel: number;
   materials: string;
-  observation?: string;
   focal: string;
   confirmation: string;
 };
+
 
 const matos = [
   "Sonorisation",
@@ -59,6 +80,9 @@ const matos = [
 export function EventDialog() {
   const [open, setOpen] = useState(false);
   const [selectedMatos, setSelectedMatos] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+
+  const today = useMemo(() => new Date(), []);
 
   const handleTagChange = (tag: string, checked: boolean) => {
     if (checked) {
@@ -73,27 +97,46 @@ export function EventDialog() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormValues>({
     defaultValues: {
       confirmation: "Miritsoka",
+      travel: 0,
     },
   });
 
   const onSubmit = async (data: FormValues) => {
+    const formattedDate = dateRange?.from
+      ? dateRange.to
+        ? `${format(dateRange.from, "yyyy-MM-dd")} to ${format(
+            dateRange.to,
+            "yyyy-MM-dd"
+          )}`
+        : format(dateRange.from, "yyyy-MM-dd")
+      : "";
+
     const formData = {
       ...data,
       materials: selectedMatos.join(", "),
+      date: formattedDate,
     };
-    await addEvents(formData);
-    setOpen(false);
-    toast("L'evenement a été ajouté avec succes", {
-      className: "font-bold",
-      description: "Rafraichir la page pour voir les dernieres actus",
-      // action: {
-      //   label: "Undo",
-      //   onClick: () => console.log("Undo"),
-      // },
-    });
+
+    try {
+      await addEvents(formData);
+      setOpen(false);
+      reset();
+      setSelectedMatos([]);
+      setDateRange(undefined);
+      toast.success("L'événement a été ajouté avec succès", {
+        description:
+          "Rafraîchir la page pour voir les dernières actualisations",
+      });
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout de l'événement", {
+        className: "font-bold",
+        description: "Veuillez réessayer",
+      });
+    }
   };
 
   return (
@@ -112,7 +155,7 @@ export function EventDialog() {
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
-            {/* Client and Place Row */}
+            {/* Client and Event Name Row */}
             <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="client" className="text-xs sm:text-sm">
@@ -133,13 +176,13 @@ export function EventDialog() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="eventname" className="text-xs sm:text-sm">
-                  Nom de l&apos;evenement
+                  Nom de l'événement
                 </Label>
                 <Input
                   id="eventname"
                   className="w-full text-xs sm:text-sm"
                   {...register("eventname", {
-                    required: "Le champ nom de l'evenement est requis",
+                    required: "Le champ nom de l'événement est requis",
                   })}
                 />
                 {errors.eventname && (
@@ -148,8 +191,10 @@ export function EventDialog() {
                   </span>
                 )}
               </div>
+            </div>
 
-              {/* Bondecommande */}
+            {/* Bon de commande and Bon de sortie Row */}
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="boncommande" className="text-xs sm:text-sm">
                   Bon de commande
@@ -160,20 +205,19 @@ export function EventDialog() {
                   {...register("boncommande")}
                 />
               </div>
-
-              {/* Bondesortie */}
               <div className="space-y-2">
-                <Label htmlFor="observation" className="text-xs sm:text-sm">
+                <Label htmlFor="bonsortie" className="text-xs sm:text-sm">
                   Bon de sortie
                 </Label>
                 <Input
-                  id="observation"
+                  id="bonsortie"
                   className="w-full text-xs sm:text-sm"
-                  {...register("observation")}
+                  {...register("bonsortie")}
                 />
               </div>
-              
             </div>
+
+            {/* Place and Materials Row */}
             <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="place" className="text-xs sm:text-sm">
@@ -193,7 +237,6 @@ export function EventDialog() {
                 )}
               </div>
 
-              {/* Materials */}
               <div className="space-y-2">
                 <Label htmlFor="materials" className="text-xs sm:text-sm">
                   Matériels
@@ -201,13 +244,13 @@ export function EventDialog() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button className="text-xs" variant="outline">
-                      Materiels
-                      <ChevronDown />
+                      Matériels
+                      <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>{" "}
+                  </DropdownMenuTrigger>
                   <DropdownMenuContent
                     id="materials"
-                    className="w-100 grid grid-cols-2"
+                    className="w-100 grid grid-cols-2 max-h-[300px] overflow-y-auto"
                   >
                     {matos.map((tag) => (
                       <DropdownMenuCheckboxItem
@@ -218,15 +261,15 @@ export function EventDialog() {
                         }
                         onSelect={(e) => e.preventDefault()}
                       >
-                        {tag}{" "}
+                        {tag}
                       </DropdownMenuCheckboxItem>
-                    ))}{" "}
-                  </DropdownMenuContent>{" "}
+                    ))}
+                  </DropdownMenuContent>
                 </DropdownMenu>
-                {errors.materials && (
-                  <span className="text-xs text-red-500">
-                    {errors.materials.message}
-                  </span>
+                {selectedMatos.length > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    Sélectionné: {selectedMatos.join(", ")}
+                  </div>
                 )}
               </div>
             </div>
@@ -237,18 +280,83 @@ export function EventDialog() {
                 <Label htmlFor="date" className="text-xs sm:text-sm">
                   Date
                 </Label>
-                <Input
-                  type="date"
-                  className="w-full text-xs sm:text-sm"
-                  id="date"
-                  min={new Date().toISOString().split("T")[0]}
-                  {...register("date", {
-                    required: "Le champ date est requis",
-                  })}
-                />
-                {errors.date && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date"
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal text-xs sm:text-sm",
+                        !dateRange && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateRange?.from ? (
+                        dateRange.to ? (
+                          <>
+                            {format(dateRange.from, "dd/MM/yyyy")} -{" "}
+                            {format(dateRange.to, "dd/MM/yyyy")}
+                          </>
+                        ) : (
+                          format(dateRange.from, "dd/MM/yyyy")
+                        )
+                      ) : (
+                        <span>Choisissez une date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <DayPicker
+                      mode="range"
+                      defaultMonth={dateRange?.from}
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      disabled={[{ before: today }]}
+                      locale={fr}
+                      id="date"
+                      classNames={{
+                        month: "capitalize font-semibold text-sm sm:text-base",
+                        selected: "text-white",
+                        root: `${
+                          getDefaultClassNames().root
+                        } shadow-none border rounded-sm p-2 sm:p-4 md:p-5 w-full`,
+                        day: "group rounded-sm text-xs sm:text-sm",
+                        caption_label: "text-sm sm:text-base",
+                      }}
+                      numberOfMonths={1}
+                      components={{
+                        DayButton: (props: DayButtonProps) => (
+                          <Button
+                            {...props}
+                            variant="ghost"
+                            className="w-8 h-8 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-[3px]"
+                          />
+                        ),
+                        Chevron: ({
+                          className,
+                          orientation,
+                          ...props
+                        }: ChevronProps) => {
+                          const Icon =
+                            orientation === "left"
+                              ? ChevronLeft
+                              : orientation === "right"
+                              ? ChevronRight
+                              : ChevronDown;
+                          return (
+                            <Icon
+                              className={`${className} w-6 h-6`}
+                              {...props}
+                            />
+                          );
+                        },
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                {!dateRange?.from && (
                   <span className="text-xs text-red-500">
-                    {errors.date.message}
+                    Veuillez sélectionner une date
                   </span>
                 )}
               </div>
@@ -266,6 +374,10 @@ export function EventDialog() {
                   {...register("travel", {
                     required: "Le champ route est requis",
                     valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Le nombre de jours ne peut pas être négatif",
+                    },
                   })}
                 />
                 {errors.travel && (
@@ -285,7 +397,7 @@ export function EventDialog() {
                 id="focal"
                 className="w-full text-xs sm:text-sm"
                 {...register("focal", {
-                  required: "Le champ focal est requis",
+                  required: "Le champ point focal est requis",
                 })}
               />
               {errors.focal && (

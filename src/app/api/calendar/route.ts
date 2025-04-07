@@ -6,9 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export async function GET() {
   const data = await db
-    .select({ 
-      date: events.date,
-      color: events.confirmation })
+    .select()
     .from(events)
     .orderBy(asc(events.date));
 
