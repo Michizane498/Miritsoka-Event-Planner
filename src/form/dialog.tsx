@@ -57,7 +57,6 @@ export type FormValues = {
   confirmation: string;
 };
 
-
 const matos = [
   "Sonorisation",
   "Lumiere",
@@ -131,7 +130,7 @@ export function EventDialog() {
         description:
           "Rafraîchir la page pour voir les dernières actualisations",
       });
-    } catch (error) {
+    } catch {
       toast.error("Erreur lors de l'ajout de l'événement", {
         className: "font-bold",
         description: "Veuillez réessayer",
@@ -176,7 +175,7 @@ export function EventDialog() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="eventname" className="text-xs sm:text-sm">
-                  Nom de l'événement
+                  Nom de l&apos;événement
                 </Label>
                 <Input
                   id="eventname"
