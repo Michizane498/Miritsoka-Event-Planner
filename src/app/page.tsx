@@ -4,6 +4,7 @@ import { EventDialog } from "@/form/dialog";
 import { MyScrollArea } from "@/components/ScrollArea/ScrollArea";
 import { CustomCalendar } from "@/components/Calendar/ColoredCalendar";
 import { ModeToggle } from "@/components/Themetoggle/Themetogglebutton";
+import { AdminOnly } from "@/components/adminonly";
 
 export default function page() {
   return (
@@ -31,7 +32,9 @@ export default function page() {
         {/* Events Sidebar */}
         <div className="lg:sticky lg:top-0 lg:h-screen lg:py-8">
           <div className="grid h-full gap-4">
-            <EventDialog />
+            <AdminOnly>
+              <EventDialog />
+            </AdminOnly>
             <MyScrollArea />
           </div>
         </div>

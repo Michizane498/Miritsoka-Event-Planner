@@ -24,16 +24,8 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "../ui/button";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  isSameDay,
-  format,
-  parseISO,
-  isWithinInterval,
-} from "date-fns";
-import {
-  deleteSpecificEvents,
-  updateEvents,
-} from "@/actions/eventActions";
+import { isSameDay, format, parseISO, isWithinInterval } from "date-fns";
+import { deleteSpecificEvents, updateEvents } from "@/actions/eventActions";
 import {
   Dialog,
   DialogContent,
@@ -67,6 +59,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { AdminOnly } from "../adminonly";
 
 // ==================== Types ====================
 
@@ -366,14 +359,16 @@ export function CustomCalendar() {
                           <Info className="mr-2 size-4" />
                           <span className="text-sm">Details/Modifier</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setDeleteconfirmation(true)}
-                        >
-                          <Trash2 className="mr-2 size-4 stroke-red-600" />
-                          <span className="text-sm text-red-600">
-                            Supprimer
-                          </span>
-                        </DropdownMenuItem>
+                        <AdminOnly>
+                          <DropdownMenuItem
+                            onClick={() => setDeleteconfirmation(true)}
+                          >
+                            <Trash2 className="mr-2 size-4 stroke-red-600" />
+                            <span className="text-sm text-red-600">
+                              Supprimer
+                            </span>
+                          </DropdownMenuItem>
+                        </AdminOnly>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -690,18 +685,24 @@ export function CustomCalendar() {
               </div>
 
               <DialogFooter className="gap-3 sm:gap-4 mt-4 justify-end flex flex-row">
-                <DialogClose asChild>
+                <AdminOnly>
+                  <DialogClose asChild>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="text-xs sm:text-sm"
+                    >
+                      Annuler
+                    </Button>
+                  </DialogClose>
                   <Button
-                    variant="secondary"
+                    type="submit"
                     size="sm"
                     className="text-xs sm:text-sm"
                   >
-                    Annuler
+                    Sauvegarder
                   </Button>
-                </DialogClose>
-                <Button type="submit" size="sm" className="text-xs sm:text-sm">
-                  Sauvegarder
-                </Button>
+                </AdminOnly>
               </DialogFooter>
             </form>
           )}
