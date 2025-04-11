@@ -159,7 +159,7 @@ export function CustomCalendar() {
 
   // Date utilities
   const today = useMemo(() => new Date(), []);
-  const startYear = useMemo(() => new Date(), []);
+  // const startYear = useMemo(() => new Date(), []);
 
   // Data fetching
   const fetchCalendarData = useCallback(async () => {
@@ -297,8 +297,8 @@ export function CustomCalendar() {
           greenRanges: "green-marker",
           redRanges: "red-marker",
         }}
-        disabled={[{ before: today }]}
-        startMonth={startYear}
+        // disabled={[{ before: today }]}
+        // startMonth={startYear}
         classNames={{
           month: "capitalize font-semibold text-sm sm:text-base",
           selected: "text-white",
