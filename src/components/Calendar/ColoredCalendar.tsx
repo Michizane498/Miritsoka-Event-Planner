@@ -92,7 +92,7 @@ const DayPickerComponents = {
     <Button
       {...props}
       variant="ghost"
-      className="lg:w-20 w-8 h-8 lg:h-20 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-[3px]"
+      className="lg:w-20 w-fit h-fit lg:h-20 px-3 py-3 sm:gap-0 text-accent-foreground group-aria-selected:bg-accent rounded-[3px]"
     />
   ),
   Chevron: ({ className, orientation, ...props }: ChevronProps) => {
