@@ -1,0 +1,123 @@
+{
+  "id": "7679ae4d-19df-4f4a-ba3e-f24f993b8b82",
+  "prevId": "ac4df85f-930e-4400-a8af-a121710f080f",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.events": {
+      "name": "events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "client": {
+          "name": "client",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eventname": {
+          "name": "eventname",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bon_de_commande": {
+          "name": "bon_de_commande",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bon_de_sortie": {
+          "name": "bon_de_sortie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "place": {
+          "name": "place",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "travel": {
+          "name": "travel",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "materials": {
+          "name": "materials",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "focal": {
+          "name": "focal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmation": {
+          "name": "confirmation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "regiefacade": {
+          "name": "regiefacade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regieretour": {
+          "name": "regieretour",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regielumiere": {
+          "name": "regielumiere",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regieecran": {
+          "name": "regieecran",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

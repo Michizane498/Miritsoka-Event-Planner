@@ -21,8 +21,12 @@ export const addEvents = async (data: InsertEvent) => {
     materials: data.materials,
     focal: data.focal,
     confirmation: data.confirmation,
+    regiefacade: data.regiefacade,
+    regieretour: data.regieretour,
+    regielumiere: data.regielumiere,
+    regieecran: data.regieecran,
   });
-  
+
   revalidatePath("/");
 };
 
@@ -39,7 +43,6 @@ export const deleteSpecificEvents = async (event: number) => {
   revalidatePath("/");
 };
 
-
 export const updateEvents = async (data: {
   id: number;
   client: string;
@@ -52,9 +55,13 @@ export const updateEvents = async (data: {
   materials: string;
   focal: string;
   confirmation: string;
+  regiefacade?: string | null;
+  regieretour?: string | null;
+  regielumiere?: string | null;
+  regieecran?: string | null;
 }) => {
   revalidatePath("/");
-  
+
   await db
     .update(events)
     .set({
@@ -68,6 +75,10 @@ export const updateEvents = async (data: {
       materials: data.materials,
       focal: data.focal,
       confirmation: data.confirmation,
+      regiefacade: data.regiefacade,
+      regieretour: data.regieretour,
+      regielumiere: data.regielumiere,
+      regieecran: data.regieecran,
     })
     .where(eq(events.id, data.id));
 };

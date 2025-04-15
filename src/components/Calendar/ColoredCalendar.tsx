@@ -474,7 +474,6 @@ export function CustomCalendar() {
                       </span>
                     )}
                   </div>
-
                   {/* Materials */}
                   <div className="space-y-2">
                     <Label htmlFor="materials" className="text-xs sm:text-sm">
@@ -509,6 +508,81 @@ export function CustomCalendar() {
                       <div className="text-xs text-muted-foreground">
                         Sélectionné: {selectedMatos.join(", ")}
                       </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="regiefacade" className="text-xs sm:text-sm">
+                      Regie Facade
+                    </Label>
+                    <Input
+                      id="regiefacade"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={
+                        currentEvent.regiefacade ? currentEvent.regiefacade : ""
+                      }
+                      {...register("regiefacade")}
+                    />
+                    {errors.regiefacade && (
+                      <span className="text-xs text-red-500">
+                        {errors.regiefacade.message}
+                      </span>
+                    )}
+                  </div>{" "}
+                  <div className="space-y-2">
+                    <Label htmlFor="regieretour" className="text-xs sm:text-sm">
+                      Regie Retour
+                    </Label>
+                    <Input
+                      id="regieretour"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={
+                        currentEvent.regieretour ? currentEvent.regieretour : ""
+                      }
+                      {...register("regieretour")}
+                    />
+                    {errors.regieretour && (
+                      <span className="text-xs text-red-500">
+                        {errors.regieretour.message}
+                      </span>
+                    )}
+                  </div>{" "}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="regielumiere"
+                      className="text-xs sm:text-sm"
+                    >
+                      Regie Lumiere
+                    </Label>
+                    <Input
+                      id="regielumiere"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={
+                        currentEvent.regielumiere ? currentEvent.regielumiere : ""
+                      }
+                      {...register("regielumiere")}
+                    />
+                    {errors.regielumiere && (
+                      <span className="text-xs text-red-500">
+                        {errors.regielumiere.message}
+                      </span>
+                    )}
+                  </div>{" "}
+                  <div className="space-y-2">
+                    <Label htmlFor="regieecran" className="text-xs sm:text-sm">
+                      Regie Ecran
+                    </Label>
+                    <Input
+                      id="regieecran"
+                      className="w-full text-xs sm:text-sm"
+                      defaultValue={
+                        currentEvent.regieecran ? currentEvent.regieecran : ""
+                      }
+                      {...register("regieecran")}
+                    />
+                    {errors.regieecran && (
+                      <span className="text-xs text-red-500">
+                        {errors.regieecran.message}
+                      </span>
                     )}
                   </div>
                 </div>

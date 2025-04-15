@@ -18,6 +18,10 @@ export const events = pgTable("events", {
   materials: text("materials").notNull(),
   focal: text("focal").notNull(),
   confirmation: text("confirmation").notNull(),
+  regiefacade: text("regiefacade"),
+  regieretour: text("regieretour"),
+  regielumiere: text("regielumiere"),
+  regieecran: text("regieecran"),
 });
 
 

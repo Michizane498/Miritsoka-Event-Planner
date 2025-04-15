@@ -55,6 +55,10 @@ export type FormValues = {
   materials: string;
   focal: string;
   confirmation: string;
+  regiefacade: string;
+  regieretour: string;
+  regielumiere: string;
+  regieecran: string;
 };
 
 const matos = [
@@ -235,7 +239,6 @@ export function EventDialog() {
                   </span>
                 )}
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="materials" className="text-xs sm:text-sm">
                   Matériels
@@ -269,6 +272,66 @@ export function EventDialog() {
                   <div className="text-xs text-muted-foreground">
                     Sélectionné: {selectedMatos.join(", ")}
                   </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="regiefacade" className="text-xs sm:text-sm">
+                  Regie Facade
+                </Label>
+                <Input
+                  id="regiefacade"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("regiefacade")}
+                />
+                {errors.regiefacade && (
+                  <span className="text-xs text-red-500">
+                    {errors.regiefacade.message}
+                  </span>
+                )}
+              </div>{" "}
+              <div className="space-y-2">
+                <Label htmlFor="regieretour" className="text-xs sm:text-sm">
+                  Regie Retour
+                </Label>
+                <Input
+                  id="regieretour"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("regieretour")}
+                />
+                {errors.regieretour && (
+                  <span className="text-xs text-red-500">
+                    {errors.regieretour.message}
+                  </span>
+                )}
+              </div>{" "}
+              <div className="space-y-2">
+                <Label htmlFor="regielumiere" className="text-xs sm:text-sm">
+                  Regie Lumiere
+                </Label>
+                <Input
+                  id="regielumiere"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("regielumiere")}
+                />
+                {errors.regielumiere && (
+                  <span className="text-xs text-red-500">
+                    {errors.regielumiere.message}
+                  </span>
+                )}
+              </div>{" "}
+              <div className="space-y-2">
+                <Label htmlFor="regieecran" className="text-xs sm:text-sm">
+                  Regie Ecran
+                </Label>
+                <Input
+                  id="regieecran"
+                  className="w-full text-xs sm:text-sm"
+                  {...register("regieecran")}
+                />
+                {errors.regieecran && (
+                  <span className="text-xs text-red-500">
+                    {errors.regieecran.message}
+                  </span>
                 )}
               </div>
             </div>
